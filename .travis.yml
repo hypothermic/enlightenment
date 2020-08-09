@@ -1,0 +1,27 @@
+language: c
+compiler: gcc
+
+# Ubuntu 14.04
+sudo: required
+dist: trusty
+
+# Build scripts
+before_install: test/build/depends.sh
+script:         test/build/basis.sh
+
+# Operating systems supported by both Travis CI and BASIS
+os:
+  - linux
+  - osx
+
+# Environment variables used by before_install and build script
+#
+# Dependencies:
+# - prefix:    Installation prefix for dependencies and BASIS itself (writeable by build user)
+# - cmake|itk|jython|doxygen|sphinx: Version of dependency to install (if needed)
+#   + x.x.x:   Use this particular version
+#   + any:     Use latest version available through the package manager
+#   + none:    Do not install dependency before building BASIS
+#
+env:
+  - prefix=/tmp/local cmake=any   itk=none python=2 jython=none doxygen=any sphinx=none doc=yes manual=no tests=yes
