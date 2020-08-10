@@ -34,6 +34,6 @@ export PATH="$prefix/bin:$PATH"
 [[ $TRAVIS_OS_NAME != osx   ]] || export DYLD_LIBRARY_PATH="$prefix/lib:$DYLD_LIBRARY_PATH"
 
 if [[ $doc == yes ]] || [[ $manual == yes ]]; then
-  $TRAVIS_BUILD_DIR/test/build/doxygen.sh "$doxygen" "$prefix"
-  $TRAVIS_BUILD_DIR/test/build/sphinx.sh  "$sphinx"  "$prefix" $manual
+  $TRAVIS_BUILD_DIR/test/travis/doxygen.sh "$doxygen" "$prefix"
+  $TRAVIS_BUILD_DIR/test/travis/sphinx.sh  "$sphinx"  "$prefix" $manual
 fi
