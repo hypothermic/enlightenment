@@ -7,7 +7,7 @@ dist: trusty
 
 # Build scripts
 before_install: test/travis/depends.sh
-script:         test/travis/basis.sh
+script:         test/travis/build.sh
 
 # Operating systems supported by both Travis CI and BASIS
 os:
