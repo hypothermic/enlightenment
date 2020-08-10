@@ -24,4 +24,4 @@ os:
 #   + none:    Do not install dependency before building BASIS
 #
 env:
-  - prefix=/tmp/local cmake=any   itk=none python=2 jython=none doxygen=any sphinx=none doc=yes manual=no tests=yes
+  - prefix=/tmp/local cmake=any   itk=none python=2 jython=none doxygen=any sphinx=any doc=yes manual=no tests=yes
