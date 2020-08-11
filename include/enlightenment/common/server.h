@@ -16,10 +16,10 @@ typedef struct _Server EServer;
 
 struct _Server {
     GMainLoop *main_loop;
-    GSList *databases;
+    GPtrArray *databases;
 };
 
-E_EXPORT GSList *
+E_EXPORT GPtrArray *
 e_server_get_databases(EServer *server);
 
 /**
