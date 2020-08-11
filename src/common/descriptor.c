@@ -21,7 +21,7 @@ e_descriptor_from_file(GFile *file,
     g_autoptr(GKeyFile) key_file = g_key_file_new();
     EDescriptor* descriptor = g_new0(EDescriptor, 1);
 
-    if (!g_key_file_load_from_file(key_file, g_file_peek_path(file), KEY_FILE_FLAGS, error)) {
+    if (G_UNLIKELY(!g_key_file_load_from_file(key_file, g_file_peek_path(file), KEY_FILE_FLAGS, error))) {
         return NULL;
     }
 
@@ -32,7 +32,7 @@ e_descriptor_from_file(GFile *file,
 
 E_EXPORT void
 e_descriptor_free(EDescriptor *descriptor) {
-    if (descriptor) {
+    if (G_LIKELY(descriptor)) {
         g_free(descriptor);
     }
 }
@@ -45,7 +45,7 @@ g_key_file_get_string_or_default(GKeyFile *key_file,
                                  GError **error) {
     gchar *val = g_key_file_get_string(key_file, group_name, key, error);
 
-    if (val == NULL) {
+    if (G_UNLIKELY(val == NULL)) {
         g_warning("Missing key (%s) in descriptor file, using default value (%s)", key, default_value);
         val = g_strdup(default_value);
     }

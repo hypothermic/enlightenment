@@ -23,7 +23,7 @@ main(int argc, char **argv) {
 
     context = g_option_context_new(" - Enlightenment Server Arguments");
     g_option_context_add_main_entries(context, cmd_entries, NULL);
-    if (!g_option_context_parse(context, &argc, &argv, &error)) {
+    if (G_UNLIKELY(!g_option_context_parse(context, &argc, &argv, &error))) {
         g_printerr("%s\n", error->message);
         return E_SERVER_EXIT_ERROR_ARGS;
     }
@@ -36,11 +36,15 @@ main(int argc, char **argv) {
 
             // If the file does not exist, try to create an empty file.
             GFileOutputStream *temp_file_stream = g_file_create(file, G_FILE_CREATE_NONE, NULL, NULL);
-            if (temp_file_stream) {
+            if (G_LIKELY(temp_file_stream)) {
                 g_object_unref(temp_file_stream);
             }
 
             g_autoptr(EDescriptor) descriptor = e_descriptor_from_file(file, &error);
+            if (G_UNLIKELY(descriptor == NULL)) {
+                g_warning("Failed to reconstruct descriptor from file %s", g_file_get_path(file));
+                break;
+            }
 
             // TODO construct database from this
             g_warning("DB NAME: %s", descriptor->name);
