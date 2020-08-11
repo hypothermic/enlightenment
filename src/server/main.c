@@ -7,7 +7,7 @@
 #include "enlightenment/server/exitstate.h"
 #include "enlightenment/server/server.h"
 
-static gchar** descriptors = NULL;
+static gchar **descriptors = NULL;
 
 static GOptionEntry cmd_entries[] = {
         {"database",'d', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &descriptors,
@@ -33,11 +33,18 @@ main(int argc, char **argv) {
     if (descriptors) {
         for (int i = 0; descriptors[i]; i++) {
             printf("Loading descriptor %s\n", descriptors[i]);
-            GFile *file = g_file_new_for_commandline_arg(descriptors[i]);
+            g_autoptr(GFile) file = g_file_new_for_commandline_arg(descriptors[i]);
 
-            EDescriptor *descriptor = e_descriptor_from_file(file);
+            // If the file does not exist, try to create an empty file.
+            GFileOutputStream *temp_file_stream = g_file_create(file, G_FILE_CREATE_NONE, NULL, NULL);
+            if (temp_file_stream) {
+                g_object_unref(temp_file_stream);
+            }
 
-            g_free(file);
+            g_autoptr(EDescriptor) descriptor = e_descriptor_from_file(file, &error);
+
+            // TODO do something with it...
+            g_warning("DB NAME: %s", descriptor->name);
         }
     }
 

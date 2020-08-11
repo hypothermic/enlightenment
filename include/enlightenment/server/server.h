@@ -1,7 +1,11 @@
 #ifndef ENLIGHTENMENT_SERVER_H
 #define ENLIGHTENMENT_SERVER_H
 
+G_BEGIN_DECLS
+
 E_EXPORT EServer *
 e_server_new(GMainContext *context);
+
+G_END_DECLS
 
 #endif //ENLIGHTENMENT_SERVER_H

@@ -8,6 +8,8 @@
 
 #include "database.h"
 
+G_BEGIN_DECLS
+
 #define E_SERVER(ptr) ((EServer *) ptr)
 
 typedef struct _Server EServer;
@@ -29,5 +31,7 @@ E_EXPORT gboolean
 e_server_add_database(EServer *server,
                       EDatabase *database,
                       E_UNUSED GError **error);
+
+G_END_DECLS
 
 #endif //ENLIGHTENMENT_COMMON_SERVER_H

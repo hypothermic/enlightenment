@@ -1,6 +1,8 @@
 #ifndef ENLIGHTENMENT_EXITSTATE_H
 #define ENLIGHTENMENT_EXITSTATE_H
 
+G_BEGIN_DECLS
+
 typedef enum /*: uint8_t*/ {
 
     /**
@@ -19,5 +21,7 @@ typedef enum /*: uint8_t*/ {
     E_SERVER_EXIT_ERROR_INIT = 102,
 
 } EServerExitState;
+
+G_END_DECLS
 
 #endif //ENLIGHTENMENT_EXITSTATE_H

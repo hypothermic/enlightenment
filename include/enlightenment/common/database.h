@@ -8,6 +8,8 @@
 #include "descriptor.h"
 #include "table.h"
 
+G_BEGIN_DECLS
+
 #define E_DATABASE(ptr) ((EDatabase *) ptr)
 
 typedef struct _Database EDatabase;
@@ -21,5 +23,7 @@ e_database_get_tables(EDatabase *database);
 
 E_EXPORT EDatabase *
 e_database_for_descriptor(EDescriptor *descriptor);
+
+G_END_DECLS
 
 #endif //ENLIGHTENMENT_DATABASE_H
