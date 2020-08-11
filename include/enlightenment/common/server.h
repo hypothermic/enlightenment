@@ -32,6 +32,11 @@ e_server_add_database(EServer *server,
                       EDatabase *database,
                       E_UNUSED GError **error);
 
+E_EXPORT void
+e_server_free(EServer *server);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(EServer, e_server_free)
+
 G_END_DECLS
 
 #endif //ENLIGHTENMENT_COMMON_SERVER_H

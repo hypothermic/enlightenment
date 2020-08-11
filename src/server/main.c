@@ -7,9 +7,9 @@
 #include "enlightenment/server/exitstate.h"
 #include "enlightenment/server/server.h"
 
-static gchar **descriptors = NULL;
+static const gchar **descriptors = NULL;
 
-static GOptionEntry cmd_entries[] = {
+static const GOptionEntry cmd_entries[] = {
         {"database",'d', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &descriptors,
                 "Database descriptor file to load", " (can be repeated)"},
         {NULL}
@@ -17,9 +17,9 @@ static GOptionEntry cmd_entries[] = {
 
 EServerExitState
 main(int argc, char **argv) {
-    GOptionContext  *context;
-    GError          *error = NULL;
-    EServer         *server;
+    g_autoptr(GOptionContext) context = NULL;
+    g_autoptr(GError)         error   = NULL;
+    g_autoptr(EServer)        server  = NULL;
 
     context = g_option_context_new(" - Enlightenment Server Arguments");
     g_option_context_add_main_entries(context, cmd_entries, NULL);
@@ -31,8 +31,7 @@ main(int argc, char **argv) {
     server = e_server_new(g_main_context_get_thread_default());
 
     if (descriptors) {
-        for (int i = 0; descriptors[i]; i++) {
-            printf("Loading descriptor %s\n", descriptors[i]);
+        for (guint i = 0; descriptors[i]; i++) {
             g_autoptr(GFile) file = g_file_new_for_commandline_arg(descriptors[i]);
 
             // If the file does not exist, try to create an empty file.
@@ -43,7 +42,7 @@ main(int argc, char **argv) {
 
             g_autoptr(EDescriptor) descriptor = e_descriptor_from_file(file, &error);
 
-            // TODO do something with it...
+            // TODO construct database from this
             g_warning("DB NAME: %s", descriptor->name);
         }
     }

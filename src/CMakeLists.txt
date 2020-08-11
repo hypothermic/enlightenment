@@ -11,7 +11,7 @@
 ##############################################################################
 
 basis_add_library(enl-build build/exports.c build/exports.h)
-basis_add_library(enl-common common/table.c common/database.c common/descriptor.c)
+basis_add_library(enl-common common/table.c common/database.c common/descriptor.c common/server.c)
 
 basis_add_executable(enl-server server/main.c server/server.c)
 basis_target_link_libraries(enl-server enl-build)
