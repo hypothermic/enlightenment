@@ -1,8 +1,14 @@
-.idea
-
+# CMake/make build files
 *build*
 !test/travis/build.sh
 !src/build
 
+# IDE config
+.idea
+
+# Build artifacts
 *.o
 *.la
+
+# Enlightenment files
+*.e
