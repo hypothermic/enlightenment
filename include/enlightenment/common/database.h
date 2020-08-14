@@ -22,7 +22,8 @@ E_EXPORT ETable *
 e_database_get_tables(EDatabase *database);
 
 E_EXPORT EDatabase *
-e_database_for_descriptor(const EDescriptor *descriptor);
+e_database_for_descriptor(const EDescriptor *descriptor,
+                          GError **error);
 
 G_END_DECLS
 

@@ -7,10 +7,15 @@
 #include "enlightenment/server/exitstate.h"
 #include "enlightenment/server/server.h"
 
-static const gchar **descriptors = NULL;
+static gboolean
+e_server_add_descriptors(EServer *server,
+                         const gchar **descriptors,
+                         GError **error);
+
+static const gchar **_descriptors = NULL;
 
 static const GOptionEntry cmd_entries[] = {
-        {"database",'d', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &descriptors,
+        {"database",'d', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &_descriptors,
                 "Database descriptor file to load", " (can be repeated)"},
         {NULL}
 };
@@ -30,24 +35,9 @@ main(int argc, char **argv) {
 
     server = e_server_new(g_main_context_get_thread_default());
 
-    if (descriptors) {
-        for (guint i = 0; descriptors[i]; i++) {
-            g_autoptr(GFile) file = g_file_new_for_commandline_arg(descriptors[i]);
-
-            // If the file does not exist, try to create an empty file.
-            GFileOutputStream *temp_file_stream = g_file_create(file, G_FILE_CREATE_NONE, NULL, NULL);
-            if (G_LIKELY(temp_file_stream)) {
-                g_object_unref(temp_file_stream);
-            }
-
-            g_autoptr(EDescriptor) descriptor = e_descriptor_from_file(file, &error);
-            if (G_UNLIKELY(descriptor == NULL)) {
-                g_warning("Failed to reconstruct descriptor from file %s", g_file_get_path(file));
-                break;
-            }
-
-            // TODO construct database from this
-            g_warning("DB NAME: %s", descriptor->name);
+    if (_descriptors) {
+        if (!e_server_add_descriptors(server, _descriptors, &error)) {
+            g_critical("Failed to parse and add descriptors, error: %s (%d)", error->message, error->code);
         }
     }
 
@@ -55,4 +45,33 @@ main(int argc, char **argv) {
     g_main_loop_unref(server->main_loop);
 
     return E_SERVER_EXIT_SUCCESS;
+}
+
+static gboolean
+e_server_add_descriptors(EServer *server,
+                         const gchar **descriptors,
+                         GError **error) {
+    for (guint i = 0; descriptors[i]; i++) {
+        g_autoptr(GFile) file = g_file_new_for_commandline_arg(descriptors[i]);
+
+        // If the file does not exist, try to create an empty file.
+        GFileOutputStream *temp_file_stream = g_file_create(file, G_FILE_CREATE_NONE, NULL, NULL);
+        if (G_LIKELY(temp_file_stream)) {
+            g_object_unref(temp_file_stream);
+        }
+
+        g_autoptr(EDescriptor) descriptor = e_descriptor_from_file(file, error);
+        if (G_UNLIKELY(descriptor == NULL)) {
+            return FALSE;
+        }
+
+        EDatabase *database = e_database_for_descriptor(descriptor, error);
+        if (G_UNLIKELY(database == NULL)) {
+            return FALSE;
+        }
+
+        g_return_val_if_fail(e_server_add_database(server, database, error), FALSE);
+    }
+
+    return TRUE;
 }
