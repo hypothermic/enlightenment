@@ -40,3 +40,10 @@ e_database_for_descriptor(const EDescriptor *const descriptor,
 
     return database;
 })
+
+E_EXPORT void
+e_database_free(EDatabase *database) {
+    if (G_LIKELY(database)) {
+        g_free(database);
+    }
+}

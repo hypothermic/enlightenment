@@ -48,6 +48,11 @@ E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *descriptor,
                           GError **error);
 
+E_EXPORT void
+e_database_free(EDatabase *database);
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(EDatabase, e_database_free)
+
 G_END_DECLS
 
 #endif //ENLIGHTENMENT_DATABASE_H

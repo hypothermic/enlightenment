@@ -24,6 +24,8 @@ basis_project (
   CONTACT          "M. Bakker <admin@hypothermic.nl>"
   TEMPLATE         "basis/1.4"
 
+  INCLUDE_DIRS     "include"
+
   DEPENDS
     glib-2.0 gio-2.0 gobject-2.0
   OPTIONAL_DEPENDS
