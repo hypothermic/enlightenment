@@ -6,9 +6,10 @@ e_database_get_tables(EDatabase *database) {
     return database->tables;
 })
 
+E_USE_INTERNAL(
 E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *const descriptor,
-                          GError **error) {
+                          E_UNUSED GError **error) {
     EDatabase *database = g_new0(EDatabase, 1);
 
     database->name = g_strdup(descriptor->name);
@@ -17,4 +18,4 @@ e_database_for_descriptor(const EDescriptor *const descriptor,
     // TODO reconstruct tables
 
     return database;
-}
+})

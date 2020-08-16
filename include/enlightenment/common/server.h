@@ -4,7 +4,6 @@
 #include <glib.h>
 
 #include "build/exports.h"
-#include "build/unused.h"
 
 #include "database.h"
 
@@ -30,7 +29,7 @@ e_server_get_databases(EServer *server);
 E_EXPORT gboolean
 e_server_add_database(EServer *server,
                       EDatabase *database,
-                      E_UNUSED GError **error);
+                      GError **error);
 
 E_EXPORT void
 e_server_free(EServer *server);

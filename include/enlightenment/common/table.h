@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include "build/exports.h"
+#include "build/integrity.h"
 #include "build/internals.h"
 
 G_BEGIN_DECLS
@@ -21,7 +22,7 @@ struct _Table {
 /**
  * @returns An unowned pointer array with EColumn elements.
  */
-E_EXPORT const GPtrArray *
+E_EXPORT E_NON_NULL const GPtrArray *
 e_table_get_columns(ETable *table);
 
 G_END_DECLS
