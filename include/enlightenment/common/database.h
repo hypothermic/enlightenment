@@ -15,11 +15,13 @@ G_BEGIN_DECLS
 
 typedef struct _Database EDatabase;
 
-struct _Database {
-    const gchar *name;
-
-    E_INTERNAL(const GPtrArray *tables);
-};
+/**
+ * Allocates an EDatabase struct without instantiating its members.
+ *
+ * @returns An owned pointer to a EDatabase struct.
+ */
+E_EXPORT E_NON_NULL EDatabase *
+e_database_new(void);
 
 /**
  * @returns An unowned pointer array with ETable elements.
@@ -28,7 +30,7 @@ E_EXPORT const GPtrArray *
 e_database_get_tables(EDatabase *database);
 
 /**
- * @returns An owned EDatabase struct
+ * @returns An owned pointer to a EDatabase struct.
  */
 E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *descriptor,

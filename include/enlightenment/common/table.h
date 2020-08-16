@@ -13,11 +13,13 @@ G_BEGIN_DECLS
 
 typedef struct _Table ETable;
 
-struct _Table {
-    const gchar *name;
-
-    E_INTERNAL(const GPtrArray *columns);
-};
+/**
+ * Allocates an ETable struct without instantiating its members.
+ *
+ * @returns An owned pointer to a new ETable struct.
+ */
+E_EXPORT E_NON_NULL ETable *
+e_table_new(void);
 
 /**
  * @returns An unowned pointer array with EColumn elements.
