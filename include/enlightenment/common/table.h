@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include "build/exports.h"
+#include "build/internals.h"
 
 G_BEGIN_DECLS
 
@@ -13,7 +14,15 @@ typedef struct _Table ETable;
 
 struct _Table {
     const gchar *name;
+
+    E_INTERNAL(const GPtrArray *columns);
 };
+
+/**
+ * @returns An unowned pointer array with EColumn elements.
+ */
+E_EXPORT const GPtrArray *
+e_table_get_columns(ETable *table);
 
 G_END_DECLS
 

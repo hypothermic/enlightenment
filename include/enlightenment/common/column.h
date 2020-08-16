@@ -18,9 +18,7 @@ struct _Column {
     const gchar *name;
 
     /**
-     * Size in bits.
-     *
-     * Multiply by 8 to get the size in bytes.
+     * Size in bytes.
      */
     gulong size;
 };

@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include "build/exports.h"
+#include "build/internals.h"
 
 #include "descriptor.h"
 #include "table.h"
@@ -16,11 +17,19 @@ typedef struct _Database EDatabase;
 
 struct _Database {
     const gchar *name;
+
+    E_INTERNAL(const GPtrArray *tables);
 };
 
-E_EXPORT ETable *
+/**
+ * @returns An unowned pointer array with ETable elements.
+ */
+E_EXPORT const GPtrArray *
 e_database_get_tables(EDatabase *database);
 
+/**
+ * @returns An owned EDatabase struct
+ */
 E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *descriptor,
                           GError **error);

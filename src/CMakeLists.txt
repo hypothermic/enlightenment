@@ -10,10 +10,10 @@
 # @brief Build configuration of software.
 ##############################################################################
 
-basis_add_library(enl-build build/exports.c build/exports.h)
+basis_add_library(enl-build build/exports.c build/exports.h build/unused.h build/internals.h)
 basis_add_library(enl-common common/column.c common/database.c common/descriptor.c common/row.c common/server.c common/table.c)
 
-basis_add_library(enl-api api/engine.h build/exports.c)
+basis_add_library(enl-api ../include/enlightenment/api/engine.h build/exports.c)
 basis_target_link_libraries(enl-api enl-common)
 
 basis_add_executable(enl-server server/main.c server/server.c)

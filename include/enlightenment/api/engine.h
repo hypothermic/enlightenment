@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include "enlightenment/common/server.h"
+#include "enlightenment/common/row.h"
 
 G_BEGIN_DECLS
 
@@ -33,7 +34,7 @@ typedef const gboolean
  */
 typedef const gboolean
 (* RowReadFunc) (const ETable *table,
-                 Row *row,
+                 ERow *row,
                  GError **error);
 /*
  * TODO, equivalent of UPDATE WHERE
@@ -54,7 +55,7 @@ typedef const gboolean
  */
 typedef const gboolean
 (* RowListFunc)   (const ETable *table,
-                   Row **rows,
+                   ERow **rows,
                    GError **error);
 
 /**
