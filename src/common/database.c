@@ -1,7 +1,7 @@
 #include "enlightenment/common/database.h"
 
 struct _Database {
-    const gchar *name;
+    GQuark name;
 
     E_INTERNAL(const GPtrArray *tables);
 };
@@ -9,6 +9,16 @@ struct _Database {
 E_EXPORT E_NON_NULL EDatabase *
 e_database_new(void) {
     return g_new0(EDatabase, 1);
+}
+
+E_EXPORT const gchar *
+e_database_get_name(EDatabase *database) {
+    return g_quark_to_string(database->name);
+}
+
+E_EXPORT GQuark
+e_database_get_name_as_quark(EDatabase *database) {
+    return database->name;
 }
 
 E_USE_INTERNAL(
@@ -23,7 +33,7 @@ e_database_for_descriptor(const EDescriptor *const descriptor,
                           E_UNUSED GError **error) {
     EDatabase *database = e_database_new();
 
-    database->name = g_strdup(descriptor->name);
+    database->name = g_quark_from_string(descriptor->name);
     database->tables = g_ptr_array_new();
 
     // TODO reconstruct tables

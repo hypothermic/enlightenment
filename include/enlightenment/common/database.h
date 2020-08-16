@@ -24,13 +24,25 @@ E_EXPORT E_NON_NULL EDatabase *
 e_database_new(void);
 
 /**
+ * @returns A null-terminated character array with the name of the database.
+ */
+E_EXPORT const gchar *
+e_database_get_name(EDatabase *database);
+
+/**
+ * @returns A string represented as 32-bit int (aka quark)
+ */
+E_EXPORT GQuark
+e_database_get_name_as_quark(EDatabase *database);
+
+/**
  * @returns An unowned pointer array with ETable elements.
  */
 E_EXPORT const GPtrArray *
 e_database_get_tables(EDatabase *database);
 
 /**
- * @returns An owned pointer to a EDatabase struct.
+ * @returns An owned pointer to a fully instantiated EDatabase struct.
  */
 E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *descriptor,

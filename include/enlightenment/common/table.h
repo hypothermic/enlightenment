@@ -22,6 +22,18 @@ E_EXPORT E_NON_NULL ETable *
 e_table_new(void);
 
 /**
+ * @returns A null-terminated character array with the name of the table.
+ */
+E_EXPORT const gchar *
+e_table_get_name(ETable *table);
+
+/**
+ * @returns A string represented as 32-bit int (aka quark)
+ */
+E_EXPORT GQuark
+e_table_get_name_as_quark(ETable *table);
+
+/**
  * @returns An unowned pointer array with EColumn elements.
  */
 E_EXPORT E_NON_NULL const GPtrArray *
