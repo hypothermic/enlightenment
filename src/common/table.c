@@ -11,15 +11,17 @@ e_table_new(void) {
     return g_new0(ETable, 1);
 }
 
+E_USE_INTERNAL(
 E_EXPORT gboolean
 e_table_init(ETable *table,
              const gchar *const name) {
     g_return_val_if_fail(table, FALSE);
 
     table->name = g_quark_from_string(name);
+    table->columns = g_ptr_array_new();
 
     return TRUE;
-}
+})
 
 E_EXPORT const gchar *
 e_table_get_name(ETable *table) {

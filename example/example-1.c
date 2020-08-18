@@ -9,7 +9,7 @@
  * Because Enlightenment uses parallel computation for IO, you will need to run a GMainContext (as seen in the example).
  * You may use this GMainContext for your own operations too if you'd like to do so.
  *
- * The table we'll be creating has three columns: UserID (int64), UserScore (int16),
+ * The table we'll be creating has three columns: UserID (int64), UserDeaths (int16), UserScore (int16),
  */
 
 int
@@ -21,9 +21,17 @@ main(int argc, gchar **argv) {
 
     server = e_server_new(g_main_context_get_thread_default());
 
+    table = e_table_new();
+    e_table_init(table, "User");
+
+    // TODO add rows
+    // TODO set engine
+
     database = e_database_new();
 
-    e_server_add_database()
+    if (!e_server_add_database(server, database, &error)) {
+        g_error("Error while adding database to server: %s", error->message);
+    }
 
     g_main_loop_run(server->main_loop);
     g_main_loop_unref(server->main_loop);
