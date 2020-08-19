@@ -1,5 +1,7 @@
 #include "enlightenment/common/database.h"
 
+#include "enlightenment/common/error.h"
+
 struct _Database {
     GQuark name;
 
@@ -30,7 +32,9 @@ e_database_get_tables(EDatabase *database) {
 E_USE_INTERNAL(
 E_EXPORT EDatabase *
 e_database_for_descriptor(const EDescriptor *const descriptor,
-                          E_UNUSED GError **error) {
+                          GError **error) {
+    e_return_error_if_null(descriptor);
+
     EDatabase *database = e_database_new();
 
     database->name = g_quark_from_string(descriptor->name);

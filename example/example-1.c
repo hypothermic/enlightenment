@@ -13,21 +13,22 @@
  */
 
 int
-main(int argc, gchar **argv) {
+main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     g_autoptr(GError)    error    = NULL;
     g_autoptr(EServer)   server   = NULL;
     g_autoptr(EDatabase) database = NULL;
     g_autoptr(ETable)    table = NULL;
 
     server = e_server_new(g_main_context_get_thread_default());
-
+    database = e_database_new();
     table = e_table_new();
-    e_table_init(table, "User");
+
+    if (!e_table_init(table, "User", &error)) {
+
+    }
 
     // TODO add rows
     // TODO set engine
-
-    database = e_database_new();
 
     if (!e_server_add_database(server, database, &error)) {
         g_error("Error while adding database to server: %s", error->message);

@@ -24,8 +24,11 @@ basis_target_link_libraries(enl-common gio-2.0)
 basis_target_link_libraries(enl-common gobject-2.0)
 basis_target_link_libraries(enl-common gmodule-2.0)
 
-basis_add_executable(enl-server server/main.c server/server.c)
+basis_add_library(enl-server server/server.c)
+basis_target_link_libraries(enl-server enl-common)
+
+basis_add_executable(enl-server-cli server/main.c)
 basis_target_link_libraries(enl-server enl-common)
 
 basis_add_executable(enl-example-1 ../example/example-1.c)
-basis_target_link_libraries(enl-example-1 enl-common)
+basis_target_link_libraries(enl-example-1 enl-server)

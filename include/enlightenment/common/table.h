@@ -2,7 +2,7 @@
 #define ENLIGHTENMENT_TABLE_H
 
 #include <glib.h>
-#include <gobject.h>
+#include <glib-object.h>
 
 #include "build/exports.h"
 #include "build/integrity.h"
@@ -29,7 +29,8 @@ e_table_new(void);
  */
 E_EXPORT gboolean
 e_table_init(ETable *table,
-             const gchar *const name);
+             const gchar *const name,
+             GError **error);
 
 /**
  * @returns A null-terminated character array with the name of the table, or NULL if the ETable pointer is invalid.

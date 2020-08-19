@@ -26,20 +26,20 @@ typedef EEngine
 /*
  * TODO, equivalent of INSERT INTO
  */
-typedef const gboolean
+typedef gboolean
 (* RowCreateFunc) (const ETable *table,
                    GError **error);
 /*
  * TODO, equivalent of SELECT one row
  */
-typedef const gboolean
+typedef gboolean
 (* RowReadFunc) (const ETable *table,
                  ERow *row,
                  GError **error);
 /*
  * TODO, equivalent of UPDATE WHERE
  */
-typedef const gboolean
+typedef gboolean
 (* RowUpdateFunc) (const ETable *table,
                    /*what to update...?
                    which value to set...?*/
@@ -47,13 +47,13 @@ typedef const gboolean
 /*
  * TODO, equivalent of DELETE FROM
  */
-typedef const gboolean
+typedef gboolean
 (* RowDeleteFunc) (const ETable *table,
                    GError **error);
 /*
  * TODO, equivalent of SELECT multiple rows
  */
-typedef const gboolean
+typedef gboolean
 (* RowListFunc)   (const ETable *table,
                    ERow **rows,
                    GError **error);

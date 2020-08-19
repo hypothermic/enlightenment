@@ -1,5 +1,7 @@
 #include "enlightenment/common/table.h"
 
+#include "enlightenment/common/error.h"
+
 struct _Table {
     GQuark name;
 
@@ -14,8 +16,9 @@ e_table_new(void) {
 E_USE_INTERNAL(
 E_EXPORT gboolean
 e_table_init(ETable *table,
-             const gchar *const name) {
-    g_return_val_if_fail(table, FALSE);
+             const gchar *const name,
+             GError **error) {
+    e_return_error_if_null(table);
 
     table->name = g_quark_from_string(name);
     table->columns = g_ptr_array_new();

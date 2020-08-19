@@ -42,6 +42,13 @@ E_EXPORT const GPtrArray *
 e_database_get_tables(EDatabase *database);
 
 /**
+ * @returns TRUE if successful, otherwise FALSE will be returned and GError will be allocated.
+ */
+E_EXPORT gboolean
+e_database_add_table(const ETable *table,
+                     GError **error);
+
+/**
  * @returns An owned pointer to a fully instantiated EDatabase struct.
  */
 E_EXPORT EDatabase *

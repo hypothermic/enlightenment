@@ -1,6 +1,6 @@
-#include "build/integrity.h"
-
 #include "enlightenment/common/server.h"
+
+#include "enlightenment/common/error.h"
 
 E_EXPORT GPtrArray *
 e_server_get_databases(EServer *server) {
@@ -10,7 +10,10 @@ e_server_get_databases(EServer *server) {
 E_EXPORT gboolean
 e_server_add_database(EServer *server,
                       EDatabase *database,
-                      E_UNUSED GError **error) {
+                      GError **error) {
+    e_return_error_if_null(server);
+    e_return_error_if_null(database);
+
     g_ptr_array_add(server->databases, database);
 
     return TRUE;
