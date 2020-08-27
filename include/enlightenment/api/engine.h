@@ -13,61 +13,27 @@ G_BEGIN_DECLS
 typedef struct _Engine EEngine;
 
 /**
- * Create and initialize an Engine object (usually from within a dynamic module.)<br />
+ * Create and initialize an Engine object (usually within a dynamic module.)<br />
  * <br />
  * If NULL is returned, <i>error</i> will be assigned.
  *
- * @returns an Engine struct, or NULL if an error occurred.
+ * @returns a ptr to an Engine struct, or NULL if an error occurred.
  */
-typedef EEngine
-(* EngineInitFunc) (const EServer *server,
+typedef EEngine *
+(* EEngineInitFunc) (const EServer *server,
                     GError **error);
 
-/*
- * TODO, equivalent of INSERT INTO
- */
-typedef gboolean
-(* RowCreateFunc) (const ETable *table,
-                   GError **error);
-/*
- * TODO, equivalent of SELECT one row
- */
-typedef gboolean
-(* RowReadFunc) (const ETable *table,
-                 ERow *row,
-                 GError **error);
-/*
- * TODO, equivalent of UPDATE WHERE
- */
-typedef gboolean
-(* RowUpdateFunc) (const ETable *table,
-                   /*what to update...?
-                   which value to set...?*/
-                   GError **error);
-/*
- * TODO, equivalent of DELETE FROM
- */
-typedef gboolean
-(* RowDeleteFunc) (const ETable *table,
-                   GError **error);
-/*
- * TODO, equivalent of SELECT multiple rows
- */
-typedef gboolean
-(* RowListFunc)   (const ETable *table,
-                   ERow **rows,
-                   GError **error);
-
 /**
- * Data about the engine
+ * Free an Engine object (usually within a dynamic module.)<br />
+ * <br />
+ * If FALSE is returned, <i>error</i> will be assigned.
+ *
+ * @returns TRUE if success, otherwise FALSE and <i>error</i> will be assigned.
  */
-struct _Engine {
-    RowCreateFunc row_create_func;
-    RowReadFunc   row_read_func;
-    RowUpdateFunc row_update_func;
-    RowDeleteFunc row_delete_func;
-    RowListFunc   row_list_func;
-};
+typedef gboolean
+(* EEngineFreeFunc) (EEngine *engine,
+                    const EServer *server,
+                    GError **error);
 
 G_END_DECLS
 
