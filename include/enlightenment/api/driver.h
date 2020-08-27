@@ -16,11 +16,21 @@ typedef struct _Driver EDriver;
  * <br />
  * If NULL is returned, <i>error</i> will be assigned.
  *
- * @returns a Driver struct, or NULL if an error occurred.
+ * @returns a ptr to a Driver struct, or NULL if an error occurred.
  */
 typedef EDriver *
 (* EDriverInitFunc) (const EServer *server,
                      GError **error);
+
+/**
+ * Create and initialize a Driver object (usually from within a dynamic module.)<br />
+ * <br />
+ * If NULL is returned, <i>error</i> will be assigned.
+ *
+ * @returns a ptr to a GOptionGroup, or NULL if driver has no options.
+ */
+typedef GOptionGroup *
+(* EDriverGetOptionsFunc) (const EServer *server);
 
 /**
  * Free a Driver object (usually from within a dynamic module.)<br />

@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <gio/gio.h>
+#include <locale.h>
+
+#include "enlightenment/api/driver.h"
 
 #include "enlightenment/common/descriptor.h"
 #include "enlightenment/common/server.h"
@@ -11,6 +14,10 @@ static gboolean
 e_server_add_descriptors(EServer *server,
                          const gchar **descriptors,
                          GError **error);
+
+static void
+g_option_context_add_driver_options(EDriver *driver,
+                                    GOptionContext *option_context);
 
 static const gchar **_descriptors = NULL;
 
@@ -25,15 +32,25 @@ main(int argc, char **argv) {
     g_autoptr(GOptionContext) context = NULL;
     g_autoptr(GError)         error   = NULL;
     g_autoptr(EServer)        server  = NULL;
+    g_autoptr(GPtrArray)      drivers = g_ptr_array_new();
+
+    if (!setlocale(LC_ALL, "")) {
+        g_error("Failed to set locale to system default locale");
+    }
+
+    // TODO load drivers;; add to the drivers ptr array
+
+    server = e_server_new(g_main_context_get_thread_default());
 
     context = g_option_context_new(" - Enlightenment Server Arguments");
     g_option_context_add_main_entries(context, cmd_entries, NULL);
+
+    g_ptr_array_foreach(drivers, (GFunc) g_option_context_add_driver_options, context);
+
     if (G_UNLIKELY(!g_option_context_parse(context, &argc, &argv, &error))) {
         g_printerr("%s\n", error->message);
         return E_SERVER_EXIT_ERROR_ARGS;
     }
-
-    server = e_server_new(g_main_context_get_thread_default());
 
     if (_descriptors) {
         if (!e_server_add_descriptors(server, _descriptors, &error)) {
@@ -74,4 +91,10 @@ e_server_add_descriptors(EServer *server,
     }
 
     return TRUE;
+}
+
+static void
+g_option_context_add_driver_options(EDriver *driver,
+                                    GOptionContext *option_context) {
+    g_option_context_add_group(option_context, driver->)
 }
