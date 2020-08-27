@@ -96,5 +96,8 @@ e_server_add_descriptors(EServer *server,
 static void
 g_option_context_add_driver_options(EDriver *driver,
                                     GOptionContext *option_context) {
-    g_option_context_add_group(option_context, driver->)
+    EDriverGetOptionsFunc options_func = e_driver_get_options_func(driver);
+    GOptionGroup *option_group = options_func(NULL);
+
+    g_option_context_add_group(option_context, option_group);
 }
