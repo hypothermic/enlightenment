@@ -44,6 +44,9 @@ typedef gboolean
                      const EServer *server,
                      GError **error);
 
+E_EXPORT const gchar *
+e_driver_get_id(EDriver *driver);
+
 E_EXPORT EDriverGetOptionsFunc
 e_driver_get_options_func(EDriver *driver);
 

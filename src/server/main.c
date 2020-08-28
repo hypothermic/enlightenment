@@ -16,6 +16,10 @@ e_server_add_descriptors(EServer *server,
                          GError **error);
 
 static void
+e_server_free_driver(EDriver *driver,
+                     EServer *server);
+
+static void
 g_option_context_add_driver_options(EDriver *driver,
                                     GOptionContext *option_context);
 
@@ -54,12 +58,14 @@ main(int argc, char **argv) {
 
     if (_descriptors) {
         if (!e_server_add_descriptors(server, _descriptors, &error)) {
-            g_critical("Failed to parse and add descriptors, error: %s (%d)", error->message, error->code);
+            g_error("Failed to parse and add descriptors, error: %s (%d)", error->message, error->code);
         }
     }
 
     g_main_loop_run(server->main_loop);
     g_main_loop_unref(server->main_loop);
+
+    g_ptr_array_foreach(drivers, (GFunc) e_server_free_driver, server);
 
     return E_SERVER_EXIT_SUCCESS;
 }
@@ -91,6 +97,17 @@ e_server_add_descriptors(EServer *server,
     }
 
     return TRUE;
+}
+
+static void
+e_server_free_driver(EDriver *driver,
+                     EServer *server) {
+    g_autoptr(GError) error;
+    EDriverFreeFunc free_func = e_driver_get_free_func(driver);
+
+    if (!free_func(driver, server, &error)) {
+        g_error("Failed to free driver %s: %s (%d)", e_driver_get_id(driver), error->message, error->code);
+    }
 }
 
 static void
