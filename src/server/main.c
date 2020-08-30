@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <gio/gio.h>
 #include <locale.h>
+#include <gio/gio.h>
 
 #include "enlightenment/api/driver.h"
 
@@ -9,6 +9,9 @@
 
 #include "enlightenment/server/exitstate.h"
 #include "enlightenment/server/server.h"
+
+#define CLI_DEFAULT_DRIVER_DIR_PATH "."
+#define CLI_DEFAULT_ENGINE_DIR_PATH "."
 
 static gboolean
 e_server_add_descriptors(EServer *server,
@@ -22,6 +25,10 @@ e_server_free_driver(EDriver *driver,
 static void
 g_option_context_add_driver_options(EDriver *driver,
                                     GOptionContext *option_context);
+
+static gboolean
+_load_drivers(GPtrArray *drivers,
+              GError **error);
 
 static const gchar **_descriptors = NULL;
 
@@ -38,11 +45,14 @@ main(int argc, char **argv) {
     g_autoptr(EServer)        server  = NULL;
     g_autoptr(GPtrArray)      drivers = g_ptr_array_new();
 
-    if (!setlocale(LC_ALL, "")) {
+    if (G_UNLIKELY(!setlocale(LC_ALL, ""))) {
         g_error("Failed to set locale to system default locale");
     }
 
-    // TODO load drivers;; add to the drivers ptr array
+    if (G_UNLIKELY(!_load_drivers(drivers, &error))) {
+        g_error("Failed to load drivers, error: %s (%d)", error->message, error->code);
+        return E_SERVER_EXIT_ERROR_LOAD_DRIVERS;
+    }
 
     server = e_server_new(g_main_context_get_thread_default());
 
@@ -117,4 +127,25 @@ g_option_context_add_driver_options(EDriver *driver,
     GOptionGroup *option_group = options_func(NULL);
 
     g_option_context_add_group(option_context, option_group);
+}
+
+static gboolean
+_load_drivers(GPtrArray *drivers,
+              GError **error) {
+    g_autoptr(GError) local_error = NULL;
+    g_autoptr(GFile) dir = g_file_new_for_path(CLI_DEFAULT_DRIVER_DIR_PATH);
+
+    // Create the directory if it doesn't already exist.
+    if (!g_file_make_directory_with_parents(dir, NULL, &local_error)
+        && !g_error_matches(local_error, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+        g_propagate_error(error, local_error);
+        return FALSE;
+    }
+
+    g_autofree gchar *current_path = g_file_get_path(dir);
+    g_info("Searching in directory %s", current_path);
+
+    // TODO
+
+    return TRUE;
 }

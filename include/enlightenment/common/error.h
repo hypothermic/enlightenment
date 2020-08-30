@@ -1,11 +1,11 @@
 #ifndef ENLIGHTENMENT_ERROR_H
 #define ENLIGHTENMENT_ERROR_H
 
+#include <glib.h>
+
 typedef enum {
     E_ERROR_INVALID_PTR,
 } EnlightenmentError;
-
-G_DEFINE_QUARK(enlightenment-error-quark, enlightenment_error)
 
 #define ENLIGHTENMENT_ERROR (enlightenment_error_quark())
 
@@ -20,5 +20,8 @@ G_DEFINE_QUARK(enlightenment-error-quark, enlightenment_error)
                     return FALSE; \
                 } \
         } G_STMT_END \
+
+extern GQuark
+enlightenment_error_quark(void);
 
 #endif //ENLIGHTENMENT_ERROR_H

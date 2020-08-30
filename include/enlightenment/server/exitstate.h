@@ -20,6 +20,11 @@ typedef enum /*: uint8_t*/ {
      */
     E_SERVER_EXIT_ERROR_INIT = 102,
 
+    /**
+     * Error while loading drivers.
+     */
+    E_SERVER_EXIT_ERROR_LOAD_DRIVERS = 103,
+
 } EServerExitState;
 
 G_END_DECLS
