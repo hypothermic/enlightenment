@@ -13,10 +13,19 @@
 #include "enlightenment/server/server.h"
 
 // TODO add config options for these (or cmdline args)
-#define CLI_DEFAULT_DRIVER_DIR_PATH "../lib"
+#define CLI_DEFAULT_DRIVER_DIR_PATH "."
 #define CLI_DEFAULT_DRIVER_SUFFIX   ".edm." G_MODULE_SUFFIX
 #define CLI_DEFAULT_ENGINE_DIR_PATH "."
 #define CLI_DEFAULT_ENGINE_SUFFIX   ".eem." G_MODULE_SUFFIX
+
+#define e_parse_option_context(context, argc_ptr, argv_ptr, error_ptr) \
+        G_STMT_START { \
+            if (G_UNLIKELY(!g_option_context_parse(context, argc_ptr, argv_ptr, error_ptr))) { \
+                g_printerr("%s\n", error->message); \
+                return E_SERVER_EXIT_ERROR_ARGS; \
+            } \
+        } G_STMT_END \
+
 
 static gboolean
 e_server_add_descriptors(EServer *server,
@@ -37,10 +46,13 @@ _load_drivers(GPtrArray *drivers,
               GError **error);
 
 static const gchar **_descriptors = NULL;
+static const gchar **_modules = NULL;
 
 static const GOptionEntry cmd_entries[] = {
         {"database",'d', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &_descriptors,
                 "Database descriptor file to load", " (can be repeated)"},
+        {"module",  'm', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING_ARRAY, &_modules,
+                "Module shared object to load",     " (can be repeated)"},
         {NULL}
 };
 
@@ -62,22 +74,39 @@ main(int argc, char **argv) {
         return E_SERVER_EXIT_ERROR_MODULES_UNSUPPORTED;
     }
 
+    context = g_option_context_new(" - Enlightenment Server Arguments");
+    g_option_context_add_main_entries(context, cmd_entries, NULL);
+
+    e_parse_option_context(context, &argc, &argv, &error);
+
+    // Load drivers from the path
     if (G_UNLIKELY(!_load_drivers(drivers, server, &error))) {
         g_error("Failed to load drivers, error: %s (%d)", error->message, error->code);
         return E_SERVER_EXIT_ERROR_LOAD_DRIVERS;
     }
 
+    // Load drivers specified manually by the command line args
+    if (G_LIKELY(_modules)) {
+        g_warning("A");
+        for (guint i = 0; _modules[i]; i++) {
+            g_autoptr(GFile) file = g_file_new_for_commandline_arg(_modules[i]);
+
+            EDriver *driver = e_server_load_driver_from_file(server, file, &error);
+
+            if (!driver) {
+                g_error("Failed to load specified driver %s, error: %s (%d)", _modules[i], error->message, error->code);
+                return E_SERVER_EXIT_ERROR_LOAD_DRIVERS;
+            }
+
+            g_ptr_array_add(drivers, driver);
+        }
+    }
+
     g_debug("Loaded %d drivers", drivers->len);
 
-    context = g_option_context_new(" - Enlightenment Server Arguments");
-    g_option_context_add_main_entries(context, cmd_entries, NULL);
-
+    // Add driver option groups and parse args for a second time
     g_ptr_array_foreach(drivers, (GFunc) g_option_context_add_driver_options, context);
-
-    if (G_UNLIKELY(!g_option_context_parse(context, &argc, &argv, &error))) {
-        g_printerr("%s\n", error->message);
-        return E_SERVER_EXIT_ERROR_ARGS;
-    }
+    e_parse_option_context(context, &argc, &argv, &error);
 
     if (G_LIKELY(_descriptors)) {
         if (!e_server_add_descriptors(server, _descriptors, &error)) {
