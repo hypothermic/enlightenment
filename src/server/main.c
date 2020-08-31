@@ -13,7 +13,7 @@
 #include "enlightenment/server/server.h"
 
 // TODO add config options for these (or cmdline args)
-#define CLI_DEFAULT_DRIVER_DIR_PATH "."
+#define CLI_DEFAULT_DRIVER_DIR_PATH "../lib"
 #define CLI_DEFAULT_DRIVER_SUFFIX   ".edm." G_MODULE_SUFFIX
 #define CLI_DEFAULT_ENGINE_DIR_PATH "."
 #define CLI_DEFAULT_ENGINE_SUFFIX   ".eem." G_MODULE_SUFFIX
@@ -164,7 +164,7 @@ _load_drivers(GPtrArray *drivers,
 
     {
         g_autofree gchar *current_path = g_file_get_path(dir);
-        g_info("Searching in directory %s", current_path);
+        g_debug("Searching in directory %s", current_path);
     }
 
     g_autoptr(GFileEnumerator) enumerator = g_file_enumerate_children(dir,

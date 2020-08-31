@@ -7,7 +7,7 @@
 
 G_BEGIN_DECLS
 
-#define E_DRIVER_INIT_FUNC "e_driver_init"
+#define E_DRIVER_INIT_FUNC e_driver_init
 
 #define E_DRIVER(ptr) ((EDriver *) ptr)
 
@@ -47,6 +47,11 @@ typedef gboolean
 (* EDriverFreeFunc) (EDriver *driver,
                      const EServer *server,
                      GError **error);
+
+E_EXPORT EDriver *
+e_driver_new(const gchar *id,
+             EDriverGetOptionsFunc get_options_func,
+             EDriverFreeFunc free_func);
 
 E_EXPORT const gchar *
 e_driver_get_id(EDriver *driver);

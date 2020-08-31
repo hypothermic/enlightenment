@@ -33,5 +33,8 @@ basis_target_link_libraries(enl-server enl-api)
 basis_add_executable(enl-server-cli server/main.c)
 basis_target_link_libraries(enl-server-cli enl-server)
 
+# TODO, should probably make a CMakeLists.txt inside /example
 basis_add_executable(enl-example-1 ../example/example-1.c)
 basis_target_link_libraries(enl-example-1 enl-server)
+
+add_subdirectory(../driver driver)
