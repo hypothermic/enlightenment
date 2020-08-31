@@ -7,11 +7,16 @@
 #include "enlightenment/common/descriptor.h"
 #include "enlightenment/common/server.h"
 
+#include "enlightenment/server/driver.h"
+#include "enlightenment/server/error.h"
 #include "enlightenment/server/exitstate.h"
 #include "enlightenment/server/server.h"
 
+// TODO add config options for these (or cmdline args)
 #define CLI_DEFAULT_DRIVER_DIR_PATH "."
+#define CLI_DEFAULT_DRIVER_SUFFIX   ".edm." G_MODULE_SUFFIX
 #define CLI_DEFAULT_ENGINE_DIR_PATH "."
+#define CLI_DEFAULT_ENGINE_SUFFIX   ".eem." G_MODULE_SUFFIX
 
 static gboolean
 e_server_add_descriptors(EServer *server,
@@ -28,6 +33,7 @@ g_option_context_add_driver_options(EDriver *driver,
 
 static gboolean
 _load_drivers(GPtrArray *drivers,
+              EServer *server,
               GError **error);
 
 static const gchar **_descriptors = NULL;
@@ -49,12 +55,19 @@ main(int argc, char **argv) {
         g_error("Failed to set locale to system default locale");
     }
 
-    if (G_UNLIKELY(!_load_drivers(drivers, &error))) {
+    server = e_server_new(g_main_context_get_thread_default());
+
+    if (G_UNLIKELY(!g_module_supported())) {
+        g_error("Modules not supported on this platform");
+        return E_SERVER_EXIT_ERROR_MODULES_UNSUPPORTED;
+    }
+
+    if (G_UNLIKELY(!_load_drivers(drivers, server, &error))) {
         g_error("Failed to load drivers, error: %s (%d)", error->message, error->code);
         return E_SERVER_EXIT_ERROR_LOAD_DRIVERS;
     }
 
-    server = e_server_new(g_main_context_get_thread_default());
+    g_debug("Loaded %d drivers", drivers->len);
 
     context = g_option_context_new(" - Enlightenment Server Arguments");
     g_option_context_add_main_entries(context, cmd_entries, NULL);
@@ -66,14 +79,18 @@ main(int argc, char **argv) {
         return E_SERVER_EXIT_ERROR_ARGS;
     }
 
-    if (_descriptors) {
+    if (G_LIKELY(_descriptors)) {
         if (!e_server_add_descriptors(server, _descriptors, &error)) {
             g_error("Failed to parse and add descriptors, error: %s (%d)", error->message, error->code);
         }
     }
 
+    g_debug("Starting main loop");
+
     g_main_loop_run(server->main_loop);
     g_main_loop_unref(server->main_loop);
+
+    g_debug("Cleaning up");
 
     g_ptr_array_foreach(drivers, (GFunc) e_server_free_driver, server);
 
@@ -118,6 +135,8 @@ e_server_free_driver(EDriver *driver,
     if (!free_func(driver, server, &error)) {
         g_error("Failed to free driver %s: %s (%d)", e_driver_get_id(driver), error->message, error->code);
     }
+
+    // TODO we should g_module_close here
 }
 
 static void
@@ -131,6 +150,7 @@ g_option_context_add_driver_options(EDriver *driver,
 
 static gboolean
 _load_drivers(GPtrArray *drivers,
+              EServer *server,
               GError **error) {
     g_autoptr(GError) local_error = NULL;
     g_autoptr(GFile) dir = g_file_new_for_path(CLI_DEFAULT_DRIVER_DIR_PATH);
@@ -142,10 +162,39 @@ _load_drivers(GPtrArray *drivers,
         return FALSE;
     }
 
-    g_autofree gchar *current_path = g_file_get_path(dir);
-    g_info("Searching in directory %s", current_path);
+    {
+        g_autofree gchar *current_path = g_file_get_path(dir);
+        g_info("Searching in directory %s", current_path);
+    }
 
-    // TODO
+    g_autoptr(GFileEnumerator) enumerator = g_file_enumerate_children(dir,
+                                                                      G_FILE_ATTRIBUTE_STANDARD_NAME,
+                                                                      G_FILE_QUERY_INFO_NONE,
+                                                                      NULL,
+                                                                      &local_error);
+
+    if (!enumerator) {
+        g_propagate_error(error, local_error);
+        return FALSE;
+    }
+
+    GFileInfo* info;
+    while ((info = g_file_enumerator_next_file(enumerator, NULL, NULL)) != NULL) {
+        if (g_str_has_suffix(g_file_info_get_name(info), CLI_DEFAULT_DRIVER_SUFFIX)) {
+            g_autoptr(GFile) file = g_file_enumerator_get_child(enumerator, info);
+
+            EDriver *driver = e_server_load_driver_from_file(server, file, &local_error);
+
+            if (!driver) {
+                g_propagate_error(error, local_error);
+                return FALSE;
+            }
+
+            g_ptr_array_add(drivers, driver);
+        }
+
+        g_object_unref(info);
+    }
 
     return TRUE;
 }

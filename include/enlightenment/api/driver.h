@@ -7,6 +7,8 @@
 
 G_BEGIN_DECLS
 
+#define E_DRIVER_INIT_FUNC "e_driver_init"
+
 #define E_DRIVER(ptr) ((EDriver *) ptr)
 
 typedef struct _Driver EDriver;
@@ -14,7 +16,9 @@ typedef struct _Driver EDriver;
 /**
  * Create and initialize a Driver object (usually from within a dynamic module.)<br />
  * <br />
- * If NULL is returned, <i>error</i> will be assigned.
+ * If NULL is returned, <i>error</i> will be assigned.<br />
+ * <br />
+ * All driver modules must declare and export a function like this named <i>e_driver_init</i>.
  *
  * @returns a ptr to a Driver struct, or NULL if an error occurred.
  */
