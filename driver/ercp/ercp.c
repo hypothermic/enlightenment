@@ -10,6 +10,7 @@
 #define __OPTION_GROUP_NAME "ercp"
 #define __OPTION_GROUP_DESCRIPTION "Options to configure the ERCP network socket driver"
 
+
 static GOptionGroup *
 e_ercp_get_option_group(const EServer *server);
 
@@ -29,6 +30,10 @@ static const GOptionEntry option_entries[] = {
 E_EXPORT EDriver *
 E_DRIVER_INIT_FUNC(E_UNUSED const EServer *server,
                    E_UNUSED GError **error) {
+
+    // TODO create SCTP socket and stuff
+    // Possibly useful: https://airtower.wordpress.com/2010/06/30/using-sctp-in-glib/
+
     return e_driver_new(__MODULE_NAME,
                         e_ercp_get_option_group,
                         e_ercp_free);
