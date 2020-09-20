@@ -9,9 +9,8 @@
  * Because Enlightenment uses parallel computation for IO, you will need to run a GMainContext (as seen in the example).
  * You may use this GMainContext for your own operations too if you'd like to do so.
  *
- * The table we'll be creating has three columns: UserID (int64), UserDeaths (int16), UserScore (int16),
+ * The table we'll be creating has three columns: UserID (int64), UserDeaths (int16), UserScore (int16), with UserID being the only primary key.
  */
-
 int
 main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     g_autoptr(GError)    error    = NULL;
@@ -23,8 +22,11 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     database = e_database_new();
     table = e_table_new();
 
-    if (!e_table_init(table, "User", &error)) {
+    g_autoptr(GPtrArray) primary_columns = g_ptr_array_new();
+    g_autoptr(GPtrArray) data_columns = g_ptr_array_new();
 
+    if (!e_table_init(table, "User", &error)) {
+        g_error("Error while initializing table: %s", error->message);
     }
 
     // TODO add rows

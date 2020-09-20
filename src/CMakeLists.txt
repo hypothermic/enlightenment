@@ -18,7 +18,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-error=main -Wno-main)
 endif()
 
-basis_add_library(enl-common common/column.c common/database.c common/descriptor.c common/error.c common/row.c common/server.c common/table.c)
+basis_add_library(enl-common common/data_column.c common/database.c common/descriptor.c common/error.c common/primary_column.c common/row.c common/server.c common/table.c)
 basis_target_link_libraries(enl-common glib-2.0)
 basis_target_link_libraries(enl-common gio-2.0)
 basis_target_link_libraries(enl-common gobject-2.0)
@@ -34,7 +34,7 @@ basis_add_executable(enl-server-cli server/main.c)
 basis_target_link_libraries(enl-server-cli enl-server)
 
 # TODO, should probably make a CMakeLists.txt inside /example
-basis_add_executable(enl-example-1 ../example/example-1.c)
+basis_add_executable(enl-example-1 ../example/example-1.c ../example/example-2.c)
 basis_target_link_libraries(enl-example-1 enl-server)
 
 add_subdirectory(../driver driver)

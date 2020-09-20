@@ -5,11 +5,11 @@ Enlightenment is an extensible database software.
 
 It is divided into the following modules:
 
-Module | Description
---------------------
-enl-server-cli | Command-line tool to start a local server.
-enl-server | Library to use when developing your application.
-enl-api | Library to use when developing custom Engines or Drivers.
+| Module | Description |
+| ------ | ----------- |
+| enl-server-cli | Command-line tool to start a local server. |
+| enl-server | Library to use when developing your application. |
+| enl-api | Library to use when developing custom Engines or Drivers. |
 
 More info about these modules can be found in [Project Structure](doc/images/enl-global-structure-dark.png) [(L)](doc/images/enl-global-structure-light.png) and [CMake Structure](doc/images/cmake-structure-dark.png) [(L)](doc/images/cmake-structure-light.png)
 

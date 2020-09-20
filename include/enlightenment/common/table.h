@@ -30,6 +30,8 @@ e_table_new(void);
 E_EXPORT gboolean
 e_table_init(ETable *table,
              const gchar *const name,
+             const GPtrArray *primary_columns,
+             const GPtrArray *data_columns,
              GError **error);
 
 /**
@@ -50,7 +52,15 @@ e_table_get_name_as_quark(ETable *table);
  * @returns An unowned pointer array with EColumn elements.
  */
 E_EXPORT E_NON_NULL const GPtrArray *
-e_table_get_columns(ETable *table);
+e_table_get_primary_columns(ETable *table);
+
+/**
+ * Make sure you provide a valid ETable pointer, this will crash if you don't do so.
+ *
+ * @returns An unowned pointer array with EColumn elements.
+ */
+E_EXPORT E_NON_NULL const GPtrArray *
+e_table_get_data_columns(ETable *table);
 
 E_EXPORT void
 e_table_free(ETable *table);

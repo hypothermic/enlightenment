@@ -3,7 +3,7 @@
 
 #include "api/engine.h"
 
-#include "common/column.h"
+#include "common/data_column.h"
 #include "common/database.h"
 #include "common/descriptor.h"
 #include "common/row.h"
