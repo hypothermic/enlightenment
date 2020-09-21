@@ -3,7 +3,9 @@
 #include <enlightenment/enlightenment.h>
 
 /*
- * This code shows the most simple usage of Enlightenment.
+ * This code shows the basic usage of Enlightenment.
+ * It uses a simple in-memory engine (like MEMORY or HEAP in MySQL).
+ *
  * I wanted to keep this code as simple as possible, so it does not cover topics such as multithreading, parallel IO and sharding.
  * Please don't use this code in performance critical situations; it'll be slow because the calls to EEngine are performing blocking IO!
  *
@@ -25,12 +27,15 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     column_userdeaths = e_data_column_new("UserDeaths", 16);
     column_userscore = e_data_column_new("UserScore", 16);
 
+    g_ptr_array_add(primary_columns, column_userid);
+    g_ptr_array_add(data_columns, column_userdeaths);
+    g_ptr_array_add(data_columns, column_userscore);
+
     if (!e_table_init(table, "User", primary_columns, data_columns, &error)) {
         g_error("Error while initializing table: %s", error->message);
     }
 
-    // TODO add columns
-    // TODO create engine
+    // TODO create engine instance
     // TODO insert rows
     // TODO retrieve rows
 

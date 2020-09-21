@@ -1,7 +1,7 @@
 Introduction
 ===============
 
-Enlightenment is an extensible database software.
+Enlightenment is an extensible database management software.
 
 It is divided into the following modules:
 
@@ -16,7 +16,7 @@ More info about these modules can be found in [Project Structure](doc/images/enl
 License
 ===============
 
-Copyright (c) 2020 Hypothermic IT <br />
+Copyright (c) 2020 Hypothermic IT
 
 See COPYING file for license information.
 
@@ -38,13 +38,16 @@ Roadmap
 2. [ ] CLI
 3. [ ] Engines
     - [ ] In-memory engine
-    - [ ] Disk storage engine
+    - [ ] General purpose disk storage engine
     - [ ] Hybrid engine
 4. [ ] Drivers
     - [ ] ENL minimalistic driver
     - [ ] MySQL/MariaDB compatible
     - [ ] Mongo compatible driver (although ours is relational, it'll work probably)
-5. [ ] Easier integration for library users through some sort of higher order control structure
+5. [ ] Library usage examples
+    - [ ] Low-level example with manual table and engine creation
+    - [ ] High-level example using EServer HOC described in #6
+6. [ ] Easier integration for library users through some sort of higher order control structure (EServer?)
 
 Package Content
 ===============

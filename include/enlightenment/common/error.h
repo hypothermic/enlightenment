@@ -21,6 +21,18 @@ typedef enum {
                 } \
         } G_STMT_END \
 
+#define e_return_error_if_null_msg(ptr, msg) \
+        G_STMT_START { \
+            if (G_LIKELY (ptr)) \
+                { } \
+            else \
+                { \
+                    g_set_error(error, ENLIGHTENMENT_ERROR, E_ERROR_INVALID_PTR, \
+                                "%s was null in func %s, message: %s", #ptr, __func__, msg); \
+                    return FALSE; \
+                } \
+        } G_STMT_END \
+
 extern GQuark
 enlightenment_error_quark(void);
 

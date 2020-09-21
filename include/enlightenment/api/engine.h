@@ -70,6 +70,14 @@ typedef gboolean
                     ERow **rows,
                     GError **error);
 
+struct _Engine {
+    ERowCreateFunc row_create_func;
+    ERowReadFunc   row_read_func;
+    ERowUpdateFunc row_update_func;
+    ERowDeleteFunc row_delete_func;
+    ERowListFunc   row_list_func;
+};
+
 G_END_DECLS
 
 #endif //ENLIGHTENMENT_ENGINE_H

@@ -46,13 +46,13 @@ e_table_get_name_as_quark(ETable *table) {
 
 E_USE_INTERNAL(
 E_EXPORT const GPtrArray *
-e_table_get_primary_columns(ETable *table) {
+e_table_get_primary_columns(const ETable *table) {
     return table->primary_columns;
 })
 
 E_USE_INTERNAL(
 E_EXPORT const GPtrArray *
-e_table_get_data_columns(ETable *table) {
+e_table_get_data_columns(const ETable *table) {
     return table->data_columns;
 })
 

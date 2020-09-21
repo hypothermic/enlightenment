@@ -52,7 +52,7 @@ e_table_get_name_as_quark(ETable *table);
  * @returns An unowned pointer array with EColumn elements.
  */
 E_EXPORT E_NON_NULL const GPtrArray *
-e_table_get_primary_columns(ETable *table);
+e_table_get_primary_columns(const ETable *table);
 
 /**
  * Make sure you provide a valid ETable pointer, this will crash if you don't do so.
@@ -60,7 +60,7 @@ e_table_get_primary_columns(ETable *table);
  * @returns An unowned pointer array with EColumn elements.
  */
 E_EXPORT E_NON_NULL const GPtrArray *
-e_table_get_data_columns(ETable *table);
+e_table_get_data_columns(const ETable *table);
 
 E_EXPORT void
 e_table_free(ETable *table);

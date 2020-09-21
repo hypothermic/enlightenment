@@ -87,7 +87,6 @@ main(int argc, char **argv) {
 
     // Load drivers specified manually by the command line args
     if (G_LIKELY(_modules)) {
-        g_warning("A");
         for (guint i = 0; _modules[i]; i++) {
             g_autoptr(GFile) file = g_file_new_for_commandline_arg(_modules[i]);
 
