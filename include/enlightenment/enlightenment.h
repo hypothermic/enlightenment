@@ -6,6 +6,7 @@
 #include "common/data_column.h"
 #include "common/database.h"
 #include "common/descriptor.h"
+#include "common/primary_column.h"
 #include "common/row.h"
 #include "common/server.h"
 #include "common/table.h"

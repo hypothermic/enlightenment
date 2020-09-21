@@ -13,14 +13,19 @@
  */
 int
 main(E_UNUSED int argc, E_UNUSED gchar **argv) {
-    g_autoptr(GError)    error = NULL;
-    g_autoptr(ETable)    table = NULL;
+    g_autoptr(GError)           error = NULL;
+    g_autoptr(ETable)           table = NULL;
+    g_autoptr(GPtrArray)        primary_columns = g_ptr_array_new();
+    g_autoptr(GPtrArray)        data_columns = g_ptr_array_new();
+    g_autoptr(EPrimaryColumn)   column_userid = NULL;
+    g_autoptr(EDataColumn)      column_userdeaths = NULL, column_userscore = NULL;
+
     table = e_table_new();
+    column_userid = e_primary_column_new_s64("UserID");
+    column_userdeaths = e_data_column_new("UserDeaths", 16);
+    column_userscore = e_data_column_new("UserScore", 16);
 
-    g_autoptr(GPtrArray) primary_columns = g_ptr_array_new();
-    g_autoptr(GPtrArray) data_columns = g_ptr_array_new();
-
-    if (!e_table_init(table, "User", &error)) {
+    if (!e_table_init(table, "User", primary_columns, data_columns, &error)) {
         g_error("Error while initializing table: %s", error->message);
     }
 
