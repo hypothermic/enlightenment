@@ -15,7 +15,8 @@ typedef struct _Row ERow;
  *
  */
 struct _Row {
-    const gchar *name;
+    GPtrArray *primary_key_values;
+    GPtrArray *data_values;
 };
 
 E_EXPORT void

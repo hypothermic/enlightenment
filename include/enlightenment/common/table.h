@@ -62,6 +62,9 @@ e_table_get_primary_columns(const ETable *table);
 E_EXPORT E_NON_NULL const GPtrArray *
 e_table_get_data_columns(const ETable *table);
 
+E_EXPORT guint64
+e_table_get_row_size(const ETable *table);
+
 E_EXPORT void
 e_table_free(ETable *table);
 

@@ -2,6 +2,8 @@
 
 #include "enlightenment/common/error.h"
 
+static _count_column_size
+
 struct _Table {
     GQuark name;
 
@@ -55,6 +57,15 @@ E_EXPORT const GPtrArray *
 e_table_get_data_columns(const ETable *table) {
     return table->data_columns;
 })
+
+E_EXPORT guint64
+e_table_get_row_size(const ETable *table) {
+    guint64 size = 0;
+
+    g_ptr_array_foreach()
+
+    return size;
+}
 
 E_EXPORT void
 e_table_free(ETable *table) {

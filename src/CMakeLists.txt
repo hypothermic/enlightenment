@@ -32,7 +32,7 @@ basis_target_link_libraries(enl-api enl-common)
 basis_add_library(enl-server server/server.c server/error.c server/driver.c)
 basis_target_link_libraries(enl-server enl-api)
 
-basis_add_library(enl-engine-imh ../engine/imh/imh.c ../engine/imh/error.c)
+basis_add_library(enl-engine-imh ../engine/imh/imh.c ../engine/imh/error.c ../engine/imh/1d.c)
 basis_target_link_libraries(enl-engine-imh enl-api)
 
 basis_add_executable(enl-server-cli server/main.c)
