@@ -12,7 +12,7 @@ G_BEGIN_DECLS
 typedef struct _Row ERow;
 
 /**
- *
+ * A row in a table.
  */
 struct _Row {
     GPtrArray *primary_key_values;

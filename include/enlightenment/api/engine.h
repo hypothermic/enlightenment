@@ -35,41 +35,69 @@ typedef gboolean
                     const EServer *server,
                     GError **error);
 
-/*
- * TODO, equivalent of INSERT INTO
+/**
+ * Insert a row into the table.<br />
+ * <br />
+ * If the primary key value(s) are NULL, the row will be appended to the table.<br />
+ * If the primary key value(s) are non-NULL, the row will be inserted at the index matching the primary key value(s).<br />
+ * <br />
+ * A similar SQL statement would include the keywords "INSERT INTO".
+ *
+ * @return TRUE if successful. Upon error, FALSE will be returned and <i>error</i> will be assigned.
  */
 typedef gboolean
 (* ERowCreateFunc) (const ETable *table,
                     ERow *row,
                     gpointer func_data,
                     GError **error);
-/*
- * TODO, equivalent of SELECT one row
+
+/**
+ * Select one row by primary key value(s).<br />
+ * <br />
+ * A similar SQL statement would include the keywords "SELECT ... LIMIT 1".
+ *
+ * @return An array of ERow objects if successful. Upon error, NULL will be returned and <i>error</i> will be assigned.
  */
-typedef gboolean
+typedef ERow *
 (* ERowReadFunc)   (const ETable *table,
-                    ERow *row,
+                    GPtrArray *primary_key_values,
                     gpointer func_data,
                     GError **error);
-/*
- * TODO, equivalent of UPDATE WHERE
+/**
+ * Set data value(s) where the primary key value(s) match(es) the given primary key value(s).<br />
+ * <br />
+ * Note that the ptr arrays in arguments <i>data_columns_to_be_replaced</i>
+ * and <i>replacement_data_values</i> need to be of equal length.<br />
+ * <br />
+ * A similar SQL statement would include the keywords "UPDATE WHERE".
+ *
+ * @return TRUE if successful. Upon error, FALSE will be returned and <i>error</i> will be assigned.
  */
 typedef gboolean
 (* ERowUpdateFunc) (const ETable *table,
-        /*what to update...?
-        which value to set...?*/
+                    GPtrArray *primary_key_values,
+                    GPtrArray *data_columns_to_be_replaced,
+                    GPtrArray *replacement_data_values,
                     gpointer func_data,
                     GError **error);
-/*
- * TODO, equivalent of DELETE FROM
+/**
+ * Delete a row where the primary key value(s) match(es) the given primary key value(s).<br />
+ * <br />
+ * A similar SQL statement would include the keywords "DELETE FROM".
+ *
+ * @return TRUE if successful. Upon error, FALSE will be returned and <i>error</i> will be assigned.
  */
 typedef gboolean
 (* ERowDeleteFunc) (const ETable *table,
-                    /* primary keys here ??? */
+                    GPtrArray *primary_key_values,
                     gpointer func_data,
                     GError **error);
-/*
- * TODO, equivalent of SELECT multiple rows
+/**
+ * Retrieve all rows in a table.<br />
+ * <br />
+ * A similar SQL statement would include the keywords "SELECT * FROM".
+ *
+ * @return TRUE if successful. Upon error, FALSE will be returned and <i>error</i> will be assigned.
  */
 typedef gboolean
 (* ERowListFunc)   (const ETable *table,

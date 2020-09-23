@@ -12,6 +12,11 @@ G_BEGIN_DECLS
 
 #define E_TABLE(ptr) ((ETable *) ptr)
 
+/**
+ * A table.<br />
+ * <br />
+ * Please note that the combined length of all primary columns cannot exceed 64 bits.
+ */
 typedef struct _Table ETable;
 
 /**
