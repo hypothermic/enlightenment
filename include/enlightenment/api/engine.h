@@ -41,6 +41,7 @@ typedef gboolean
 typedef gboolean
 (* ERowCreateFunc) (const ETable *table,
                     ERow *row,
+                    gpointer func_data,
                     GError **error);
 /*
  * TODO, equivalent of SELECT one row
@@ -48,6 +49,7 @@ typedef gboolean
 typedef gboolean
 (* ERowReadFunc)   (const ETable *table,
                     ERow *row,
+                    gpointer func_data,
                     GError **error);
 /*
  * TODO, equivalent of UPDATE WHERE
@@ -56,12 +58,15 @@ typedef gboolean
 (* ERowUpdateFunc) (const ETable *table,
         /*what to update...?
         which value to set...?*/
+                    gpointer func_data,
                     GError **error);
 /*
  * TODO, equivalent of DELETE FROM
  */
 typedef gboolean
 (* ERowDeleteFunc) (const ETable *table,
+                    /* primary keys here ??? */
+                    gpointer func_data,
                     GError **error);
 /*
  * TODO, equivalent of SELECT multiple rows
@@ -69,6 +74,7 @@ typedef gboolean
 typedef gboolean
 (* ERowListFunc)   (const ETable *table,
                     ERow **rows,
+                    gpointer func_data,
                     GError **error);
 
 struct _Engine {

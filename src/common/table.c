@@ -1,8 +1,11 @@
+#include "enlightenment/common/data_column.h"
 #include "enlightenment/common/table.h"
 
 #include "enlightenment/common/error.h"
 
-static _count_column_size
+static void
+_count_data_column_size(EDataColumn *data_column,
+                        guint64 *size_ptr);
 
 struct _Table {
     GQuark name;
@@ -62,7 +65,12 @@ E_EXPORT guint64
 e_table_get_row_size(const ETable *table) {
     guint64 size = 0;
 
-    g_ptr_array_foreach()
+    size += e_table_get_primary_columns(table)->len * sizeof(gpointer);
+
+    // Discarding constness of the data col array is safe because foreach and _count_column_size do not modify it.
+    g_ptr_array_foreach((GPtrArray *) e_table_get_data_columns(table),
+                        (GFunc) _count_data_column_size,
+                        &size);
 
     return size;
 }
@@ -72,4 +80,10 @@ e_table_free(ETable *table) {
     if (G_LIKELY(table)) {
         g_free(table);
     }
+}
+
+static void
+_count_data_column_size(EDataColumn* data_column,
+                        guint64 *size_ptr) {
+    *size_ptr += data_column->cell_size;
 }
