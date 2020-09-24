@@ -1,6 +1,7 @@
 #include "packing.h"
 
 #include <enlightenment/enlightenment.h>
+#include <stdio.h>
 
 #define _ROW_PACK_ITER(ptr) ((struct _RowPackIter *) ptr)
 
@@ -31,7 +32,7 @@ e_imh_row_pack(ERow *row,
                E_UNUSED GError **error) {
     gchar *result = g_malloc0(max_bytes);
     guint64 current_bit = 0;
-    gsize iteration;
+    gsize iteration = 0;
 
     struct _RowPackIter iter = {
             .table = table,

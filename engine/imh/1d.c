@@ -50,6 +50,7 @@ e_imh_1d_alloc(EEngine *engine,
 
     data->rows = rows;
     data->row_size = row_size;
+    engine->func_data = data;
 
     engine->row_create_func = _e_imh_1d_row_create;
     // TODO

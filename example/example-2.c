@@ -57,7 +57,7 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     row = e_row_new(primary_key_values, data_values);
 
     // Insert row with UserID=420, UserDeaths=6, UserScore=100
-    if (!engine->row_create_func(table, row, NULL, &error)) {
+    if (!engine->row_create_func(table, row, engine->func_data, &error)) {
         g_error("Error while creating a row: %s", error->message);
     }
 
@@ -66,7 +66,7 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
     userScore = 60;
 
     // Insert row with UserID=700, UserDeaths=1, UserScore=60
-    if (!engine->row_create_func(table, row, NULL, &error)) {
+    if (!engine->row_create_func(table, row, engine->func_data, &error)) {
         g_error("Error while creating a row: %s", error->message);
     }
 
