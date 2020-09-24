@@ -39,7 +39,9 @@ typedef gboolean
  * Insert a row into the table.<br />
  * <br />
  * If the primary key value(s) are NULL, the row will be appended to the table.<br />
- * If the primary key value(s) are non-NULL, the row will be inserted at the index matching the primary key value(s).<br />
+ * If the primary key value(s) are non-NULL, the row will be inserted at the index matching the primary key value(s).
+ * In this case, if there exists already a row with the exact primary key value(s) as given in the parameters,
+ * it will be overwritten.<br />
  * <br />
  * A similar SQL statement would include the keywords "INSERT INTO".
  *
