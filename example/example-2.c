@@ -1,6 +1,7 @@
 #include <glib.h>
 
 #include <enlightenment/enlightenment.h>
+#include "../engine/imh/imh.h"
 
 /*
  * This code shows the basic usage of Enlightenment.
@@ -15,12 +16,14 @@
  */
 int
 main(E_UNUSED int argc, E_UNUSED gchar **argv) {
-    g_autoptr(GError)           error = NULL;
-    g_autoptr(ETable)           table = NULL;
-    g_autoptr(GPtrArray)        primary_columns = g_ptr_array_new();
-    g_autoptr(GPtrArray)        data_columns = g_ptr_array_new();
-    g_autoptr(EPrimaryColumn)   column_userid = NULL;
-    g_autoptr(EDataColumn)      column_userdeaths = NULL, column_userscore = NULL;
+    g_autoptr(GError)           error               = NULL;
+    g_autoptr(ETable)           table               = NULL;
+    g_autoptr(GPtrArray)        primary_columns     = g_ptr_array_new();
+    g_autoptr(GPtrArray)        data_columns        = g_ptr_array_new();
+    g_autoptr(EPrimaryColumn)   column_userid       = NULL;
+    g_autoptr(EDataColumn)      column_userdeaths   = NULL,
+                                column_userscore    = NULL;
+    const EEngine               *engine             = NULL;
 
     table = e_table_new();
     column_userid = e_primary_column_new_s64("UserID");
@@ -35,8 +38,38 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
         g_error("Error while initializing table: %s", error->message);
     }
 
-    // TODO create engine instance
-    // TODO insert rows
+    engine = e_imh_new(table, &error);
+    if (!engine) {
+        g_error("Error while initializing engine: %s", error->message);
+    }
+
+    g_autoptr(ERow)             row                 = NULL;
+    g_autoptr(GPtrArray)        primary_key_values  = g_ptr_array_new();
+    g_autoptr(GPtrArray)        data_values         = g_ptr_array_new();
+    guint64                     userId              = 420;
+    guint16                     userDeaths          = 6,
+                                userScore           = 100;
+
+    g_ptr_array_add(primary_key_values, &userId);
+    g_ptr_array_add(data_values,        &userDeaths);
+    g_ptr_array_add(data_values,        &userScore);
+
+    row = e_row_new(primary_key_values, data_values);
+
+    // Insert row with UserID=420, UserDeaths=6, UserScore=100
+    if (!engine->row_create_func(table, row, NULL, &error)) {
+        g_error("Error while creating a row: %s", error->message);
+    }
+
+    userId = 700;
+    userDeaths = 1;
+    userScore = 60;
+
+    // Insert row with UserID=700, UserDeaths=1, UserScore=60
+    if (!engine->row_create_func(table, row, NULL, &error)) {
+        g_error("Error while creating a row: %s", error->message);
+    }
+
     // TODO retrieve rows
 
     return EXIT_SUCCESS;

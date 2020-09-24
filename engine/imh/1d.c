@@ -3,6 +3,8 @@
 #include "data.h"
 #include "packing.h"
 
+#include <inttypes.h>
+
 #define BITS_TO_BYTES(bits)     ((bits / 8 + 1))
 
 #define DEFAULT_INDEX_OFFSET    1
@@ -35,10 +37,13 @@ static guint64
 _e_imh_1d_row_get_index(const ETable *table,
                         const ERow *row);
 
+static void
+_debug_print_garray(GArray *array);
+
 gboolean
 e_imh_1d_alloc(EEngine *engine,
                const ETable *table,
-               GError **error) {
+               E_UNUSED GError **error) {
     guint64 row_size = e_table_get_row_size(table);
     EImhData *data = g_new0(EImhData, 1);
     GArray *rows = g_array_new(FALSE, TRUE, BITS_TO_BYTES(row_size));
@@ -67,13 +72,19 @@ _e_imh_1d_row_create(const ETable *table,
     gchararray packed = e_imh_row_pack(row, BITS_TO_BYTES(data->row_size), table, error);
     guint64 requested_index = _e_imh_1d_row_get_index(table, row);
 
+    if (!packed) {
+        return FALSE;
+    }
+
     if (requested_index == 0) { // append row
         g_array_append_vals(data->rows, packed, 1);
     } else { // insert row
         g_array_insert_vals(data->rows, requested_index, packed, 1);
     }
 
-    return FALSE;
+    _debug_print_garray(data->rows);
+
+    return TRUE;
 }
 
 /**
@@ -94,6 +105,15 @@ _e_imh_1d_row_get_index(const ETable *table,
         return 0;
     } else {
         return column->convert_func(raw_key, column) + DEFAULT_INDEX_OFFSET;
+    }
+}
+
+static void
+_debug_print_garray(GArray *array) {
+    g_print("Array at location 0x%lu", (uintptr_t) array);
+
+    for (guint i = 0; i < array->len; ++i) {
+        g_print("Element at location 0x%p", g_array_index(array, gpointer, i));
     }
 }
 

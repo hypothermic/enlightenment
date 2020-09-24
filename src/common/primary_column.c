@@ -8,7 +8,7 @@ _s64_primary_key_convert(gpointer key_data,
 
 E_EXPORT EPrimaryColumn *
 e_primary_column_new_s64(const gchar *name) {
-    e_primary_column_new(name, _s64_primary_key_convert, NULL);
+    return e_primary_column_new(name, _s64_primary_key_convert, NULL);
 }
 
 E_EXPORT EPrimaryColumn *

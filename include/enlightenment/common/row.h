@@ -19,6 +19,15 @@ struct _Row {
     GPtrArray *data_values;
 };
 
+/**
+ * Allocates a new ERow struct and assigns its members to given values.
+ *
+ * @return an initiated ERow struct, or NULL on error.
+ */
+E_EXPORT ERow *
+e_row_new(GPtrArray *primary_key_values,
+          GPtrArray *data_values);
+
 E_EXPORT void
 e_row_free(ERow *row);
 
