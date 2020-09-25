@@ -1,9 +1,8 @@
 #include "1d.h"
 
 #include "data.h"
+#include "error.h"
 #include "packing.h"
-
-#include <inttypes.h>
 
 #define BITS_TO_BYTES(bits)     ((bits / 8 + 1))
 
@@ -27,11 +26,13 @@ static gboolean
 _e_imh_1d_row_delete(const ETable *table,
                      gpointer primary_key,
                      GError **error);
+*/
 
 static gboolean
 _e_imh_1d_row_list(const ETable *table,
                    ERow **rows,
-                   GError **error);*/
+                   gpointer imh_data,
+                   GError **error);
 
 static guint64
 _e_imh_1d_row_get_index(const ETable *table,
@@ -47,8 +48,10 @@ e_imh_1d_alloc(EEngine *engine,
     guint64 row_size = e_table_get_row_size(table);
     EImhData *data = g_new0(EImhData, 1);
     GArray *rows = g_array_new(TRUE, TRUE, sizeof(gpointer));
+    GSList *rows_list = NULL;
 
     data->rows = rows;
+    data->rows_list = rows_list;
     data->row_size = row_size;
     engine->func_data = data;
 
@@ -79,8 +82,12 @@ _e_imh_1d_row_create(const ETable *table,
 
     if (requested_index == 0) { // append row
         g_array_append_vals(data->rows, packed, 1);
+        data->rows_list = g_slist_append(data->rows_list, packed);
     } else { // insert row
         g_array_insert_vals(data->rows, requested_index, packed, 1);
+
+        // TODO first delete the element with requested_index from the slist!!!!
+        data->rows_list = g_slist_append(data->rows_list, packed);
     }
 
     _debug_print_garray(data->rows);
@@ -120,6 +127,25 @@ _debug_print_garray(GArray *array) {
             g_debug("Element %d at location %p\n", i - DEFAULT_INDEX_OFFSET, possible_element);
         }
     }
+}
+
+static gboolean
+_e_imh_1d_row_list(const ETable *table,
+                   ERow **rows,
+                   gpointer imh_data,
+                   GError **error) {
+    EImhData *data = E_IMH_DATA(imh_data);
+    ERow *rows_dst = *rows;
+
+    if (*rows) {
+        g_set_error(error, ENLIGHTENMENT_IMH_ERROR, E_IMH_ERROR_FUNCTION_RESULT_PTR,
+                    "Invalid destination argument provided: *rows must point to NULL");
+        return FALSE;
+    }
+
+    rows_dst = g_new0(ERow, data->rows->len);
+
+    // TODO
 }
 
 #undef BITS_TO_BYTES

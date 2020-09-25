@@ -12,7 +12,7 @@ struct _RowPackIter {
     const ETable *table;
     ERow *row;
     gchar *result;
-    guint64 *current_bit;
+    gulong *current_bit;
     gsize *iteration;
 };
 
@@ -61,13 +61,11 @@ _e_imh_row_pack_data_value(gpointer data_ptr,
     struct _RowPackIter *iter = _ROW_PACK_ITER(user_data);
 
     EDataColumn *column = g_ptr_array_index(e_table_get_data_columns(iter->table), *iter->iteration);
-    //gpointer data_ptr = g_ptr_array_index(iter->row->data_values, *iter->iteration);
 
     // I think this is correct ??? please check it!
-    //gchar *current_result_pos_ptr = iter->result + (*iter->current_bit / 8 + 1);
-    //_e_imh_row_pack_memcpyb(data_ptr, current_result_pos_ptr, column->cell_size);
-    _e_imh_row_pack_memcpyb(data_ptr, iter->result, column->cell_size);
-    iter->current_bit += column->cell_size;
+    gchar *current_result_pos_ptr = iter->result + (guint)(*iter->current_bit / 8 + 0.4f);
+    _e_imh_row_pack_memcpyb(data_ptr, current_result_pos_ptr, column->cell_size);
+    *iter->current_bit += column->cell_size;
 
     *iter->iteration += 1;
 }

@@ -17,6 +17,11 @@ typedef enum {
      */
     E_IMH_ERROR_TABLE_NO_PRIMARY_COLUMNS,
 
+    /**
+     * User provided an invalid destination for storing the function result.
+     */
+    E_IMH_ERROR_FUNCTION_RESULT_PTR,
+
 } EnlightenmentImhError;
 
 #define ENLIGHTENMENT_IMH_ERROR (enlightenment_imh_error_quark())
