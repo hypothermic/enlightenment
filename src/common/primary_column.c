@@ -36,5 +36,5 @@ e_primary_column_free(EPrimaryColumn *data_column) {
 static gint64
 _s64_primary_key_convert(gpointer const key_data,
                          E_UNUSED gpointer convert_func_data) {
-    return (gint64) key_data;
+    return *((gint64 *) key_data);
 }

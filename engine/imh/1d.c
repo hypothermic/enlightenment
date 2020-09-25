@@ -46,7 +46,7 @@ e_imh_1d_alloc(EEngine *engine,
                E_UNUSED GError **error) {
     guint64 row_size = e_table_get_row_size(table);
     EImhData *data = g_new0(EImhData, 1);
-    GArray *rows = g_array_new(FALSE, TRUE, BITS_TO_BYTES(row_size));
+    GArray *rows = g_array_new(TRUE, TRUE, sizeof(gpointer));
 
     data->rows = rows;
     data->row_size = row_size;
@@ -111,10 +111,14 @@ _e_imh_1d_row_get_index(const ETable *table,
 
 static void
 _debug_print_garray(GArray *array) {
-    g_print("Array at location 0x%lu", (uintptr_t) array);
+    g_debug("Array at location %p\n", (gpointer) array);
 
-    for (guint i = 0; i < array->len; ++i) {
-        g_print("Element at location 0x%p", g_array_index(array, gpointer, i));
+    for (guint i = DEFAULT_INDEX_OFFSET; i < array->len; i++) {
+        gpointer possible_element = g_array_index(array, gpointer, i);
+
+        if (possible_element) {
+            g_debug("Element %d at location %p\n", i - DEFAULT_INDEX_OFFSET, possible_element);
+        }
     }
 }
 
