@@ -22,6 +22,11 @@ typedef enum {
      */
     E_IMH_ERROR_FUNCTION_RESULT_PTR,
 
+    /**
+     * No more heap memory available.
+     */
+    E_IMH_ERROR_OUT_OF_MEMORY,
+
 } EnlightenmentImhError;
 
 #define ENLIGHTENMENT_IMH_ERROR (enlightenment_imh_error_quark())

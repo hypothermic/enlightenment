@@ -3,19 +3,31 @@
 #include <enlightenment/enlightenment.h>
 #include "../engine/imh/imh.h"
 
+static void
+_print_row(ERow *row);
+
+static void
+_print_primary_key_value(gpointer primary_key_value,
+                         gpointer unused);
+
+static void
+_print_data_value(gpointer data_value,
+                  gpointer unused);
+
 /*
  * This code shows the basic usage of Enlightenment.
  * It uses a simple in-memory engine (like MEMORY or HEAP in MySQL).
  *
  * I wanted to keep this code as simple as possible, so it does not cover topics such as multithreading, parallel IO and sharding.
- * Please don't use this code in performance critical situations; it'll be slow because the calls to EEngine are performing blocking IO!
+ * Please don't use this code in performance critical situations; the calls to EEngine are performing blocking IO!
  *
- * Here you can see rows being inserted and retrieved from a Table.
+ * Here you can see rows being inserted into a Table and then being retrieved from it.
  *
  * The table we'll be creating has three columns: UserID (int64), UserDeaths (int16), UserScore (int16), with UserID being the only primary key.
  */
 int
-main(E_UNUSED int argc, E_UNUSED gchar **argv) {
+main(E_UNUSED int argc,
+     E_UNUSED gchar **argv) {
     g_autoptr(GError)           error               = NULL;
     g_autoptr(ETable)           table               = NULL;
     g_autoptr(GPtrArray)        primary_columns     = g_ptr_array_new();
@@ -43,6 +55,8 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
         g_error("Error while initializing engine: %s", error->message);
     }
 
+    // If you're not using autoptr, you can free the ERows and their
+    // associated GPtrArrays and data after the row has been created by the engine.
     g_autoptr(ERow)             row                 = NULL;
     g_autoptr(GPtrArray)        primary_key_values  = g_ptr_array_new();
     g_autoptr(GPtrArray)        data_values         = g_ptr_array_new();
@@ -70,7 +84,37 @@ main(E_UNUSED int argc, E_UNUSED gchar **argv) {
         g_error("Error while creating a row: %s", error->message);
     }
 
-    // TODO retrieve rows
+    ERow **rows = NULL;
+
+    if (!engine->row_list_func(table, &rows, engine->func_data, &error)) {
+        g_error("Error while creating a row: %s", error->message);
+    }
+
+    for (int i = 0; rows[i]; i++) {
+        _print_row(rows[i]);
+    }
 
     return EXIT_SUCCESS;
+}
+
+static void
+_print_row(E_UNUSED ERow *row) {
+    g_print("Row with %d primary key values and %d data values\n", row->primary_key_values->len, row->data_values->len);
+
+    g_ptr_array_foreach(row->primary_key_values, _print_primary_key_value, NULL);
+    g_ptr_array_foreach(row->data_values, _print_data_value, NULL);
+}
+
+static void
+_print_primary_key_value(gpointer primary_key_value,
+                         E_UNUSED gpointer unused) {
+    // TODO print actual key value met behulp van de convert functie in EPrimaryColumn
+
+    g_print("Primary key value pointing to %p\n", primary_key_value);
+}
+
+static void
+_print_data_value(gpointer data_value,
+                  E_UNUSED gpointer unused) {
+    g_print("Data value pointing to %p, actual value %d\n", data_value, *(guint16 *)data_value);
 }

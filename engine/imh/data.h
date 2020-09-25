@@ -30,7 +30,14 @@ struct _Data {
     GSList *rows_list;
 
     /**
-     * Internal row data length in bits
+     * Amount of rows stored.<br />
+     * <br />
+     * Keeping a copy of the length here is faster than traversing <i>rows_list</i>.
+     */
+    guint64 row_amount;
+
+    /**
+     * Internal row data length in bits/
      */
     guint64 row_size;
 };

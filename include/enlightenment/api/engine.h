@@ -103,7 +103,7 @@ typedef gboolean
  */
 typedef gboolean
 (* ERowListFunc)   (const ETable *table,
-                    ERow **rows,
+                    ERow ***rows,
                     gpointer func_data,
                     GError **error);
 

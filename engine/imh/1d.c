@@ -8,6 +8,14 @@
 
 #define DEFAULT_INDEX_OFFSET    1
 
+#define _ROW_LIST_FOREACH_DATA(ptr) ((struct _RowListForeachData *) ptr)
+
+struct _RowListForeachData {
+    const ETable *table;
+    ERow **rows;
+    gulong iteration;
+};
+
 static gboolean
 _e_imh_1d_row_create(const ETable *table,
                      ERow *row,
@@ -30,7 +38,7 @@ _e_imh_1d_row_delete(const ETable *table,
 
 static gboolean
 _e_imh_1d_row_list(const ETable *table,
-                   ERow **rows,
+                   ERow ***rows,
                    gpointer imh_data,
                    GError **error);
 
@@ -39,7 +47,8 @@ _e_imh_1d_row_get_index(const ETable *table,
                         const ERow *row);
 
 static void
-_debug_print_garray(GArray *array);
+_e_imh_1d_row_list_foreach(gpointer element,
+                           gpointer user_data);
 
 gboolean
 e_imh_1d_alloc(EEngine *engine,
@@ -56,6 +65,7 @@ e_imh_1d_alloc(EEngine *engine,
     engine->func_data = data;
 
     engine->row_create_func = _e_imh_1d_row_create;
+    engine->row_list_func = _e_imh_1d_row_list;
     // TODO
 
     return TRUE;
@@ -90,7 +100,9 @@ _e_imh_1d_row_create(const ETable *table,
         data->rows_list = g_slist_append(data->rows_list, packed);
     }
 
-    _debug_print_garray(data->rows);
+    //_debug_print_garray(data->rows);
+
+    data->row_amount++;
 
     return TRUE;
 }
@@ -116,36 +128,47 @@ _e_imh_1d_row_get_index(const ETable *table,
     }
 }
 
-static void
-_debug_print_garray(GArray *array) {
-    g_debug("Array at location %p\n", (gpointer) array);
-
-    for (guint i = DEFAULT_INDEX_OFFSET; i < array->len; i++) {
-        gpointer possible_element = g_array_index(array, gpointer, i);
-
-        if (possible_element) {
-            g_debug("Element %d at location %p\n", i - DEFAULT_INDEX_OFFSET, possible_element);
-        }
-    }
-}
-
 static gboolean
 _e_imh_1d_row_list(const ETable *table,
-                   ERow **rows,
+                   ERow ***rows,
                    gpointer imh_data,
                    GError **error) {
     EImhData *data = E_IMH_DATA(imh_data);
-    ERow *rows_dst = *rows;
+    ERow **rows_dst = g_new0(ERow *, data->row_amount);
 
     if (*rows) {
         g_set_error(error, ENLIGHTENMENT_IMH_ERROR, E_IMH_ERROR_FUNCTION_RESULT_PTR,
-                    "Invalid destination argument provided: *rows must point to NULL");
+                    "Invalid destination argument provided: **rows must point to NULL");
         return FALSE;
     }
 
-    rows_dst = g_new0(ERow, data->rows->len);
+    struct _RowListForeachData foreach_data = {
+            .table = table,
+            .rows = rows_dst,
+            .iteration = 0,
+    };
 
-    // TODO
+    g_slist_foreach(data->rows_list, _e_imh_1d_row_list_foreach, &foreach_data);
+
+    *rows = rows_dst;
+
+    return TRUE;
+}
+
+static void
+_e_imh_1d_row_list_foreach(gpointer element,
+                           gpointer user_data) {
+    struct _RowListForeachData *data = _ROW_LIST_FOREACH_DATA(user_data);
+    GError *error = NULL;
+    ERow **rows = data->rows;
+    ERow *unpacked = e_imh_row_unpack(((gchararray) element), data->table, &error);
+
+    // TODO fill primary keys
+    unpacked->primary_key_values = g_ptr_array_new();
+
+    rows[data->iteration] = unpacked;
+
+    data->iteration++;
 }
 
 #undef BITS_TO_BYTES
