@@ -100,8 +100,6 @@ _e_imh_1d_row_create(const ETable *table,
         data->rows_list = g_slist_append(data->rows_list, packed);
     }
 
-    //_debug_print_garray(data->rows);
-
     data->row_amount++;
 
     return TRUE;
@@ -164,6 +162,7 @@ _e_imh_1d_row_list_foreach(gpointer element,
     ERow *unpacked = e_imh_row_unpack(((gchararray) element), data->table, &error);
 
     // TODO fill primary keys
+    // TODO maybe use a GSList that has another storage spot (like a HashMap) so you can always have the PK value at hand??????
     unpacked->primary_key_values = g_ptr_array_new();
 
     rows[data->iteration] = unpacked;

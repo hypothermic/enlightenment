@@ -4,11 +4,11 @@
 #include "../engine/imh/imh.h"
 
 static void
-_print_row(ERow *row);
+_print_row(const ETable *table, ERow *row);
 
 static void
 _print_primary_key_value(gpointer primary_key_value,
-                         gpointer unused);
+                         gpointer convert_func);
 
 static void
 _print_data_value(gpointer data_value,
@@ -91,26 +91,29 @@ main(E_UNUSED int argc,
     }
 
     for (int i = 0; rows[i]; i++) {
-        _print_row(rows[i]);
+        _print_row(table, rows[i]);
     }
 
     return EXIT_SUCCESS;
 }
 
 static void
-_print_row(E_UNUSED ERow *row) {
+_print_row(const ETable *table, ERow *row) {
     g_print("Row with %d primary key values and %d data values\n", row->primary_key_values->len, row->data_values->len);
 
-    g_ptr_array_foreach(row->primary_key_values, _print_primary_key_value, NULL);
+    g_ptr_array_foreach(row->primary_key_values, _print_primary_key_value, g_ptr_array_index(e_table_get_primary_columns(table), 0));
     g_ptr_array_foreach(row->data_values, _print_data_value, NULL);
 }
 
 static void
 _print_primary_key_value(gpointer primary_key_value,
-                         E_UNUSED gpointer unused) {
+                         gpointer primary_column) {
     // TODO print actual key value met behulp van de convert functie in EPrimaryColumn
+    EPrimaryColumn *column = E_PRIMARY_COLUMN(primary_column);
 
-    g_print("Primary key value pointing to %p\n", primary_key_value);
+    g_print("Primary key value pointing to %p, actual value %lu\n",
+            primary_key_value,
+            column->convert_func(primary_key_value, column->convert_func_data));
 }
 
 static void
