@@ -166,6 +166,8 @@ _e_imh_1d_row_list_foreach(gpointer element,
     ERow **rows = data->rows;
     ERow *unpacked = e_imh_row_unpack(list_element->raw_data, data->table, &error);
 
+    list_element->primary_key_value -= DEFAULT_INDEX_OFFSET;
+
     // TODO fill primary keys
     // TODO maybe use a GSList that has another storage spot (like a HashMap) so you can always have the PK value at hand??????
     unpacked->primary_key_values = g_ptr_array_new();

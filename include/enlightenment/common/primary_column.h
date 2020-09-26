@@ -12,6 +12,9 @@ G_BEGIN_DECLS
 typedef guint64
 (* EPrimaryColumnIntValueFunc) (gpointer key_data, gpointer convert_func_data);
 
+typedef gpointer
+(* EPrimaryColumnDataValueFunc) (guint64 index, gpointer convert_func_data);
+
 typedef struct _PrimaryColumn EPrimaryColumn;
 
 /**
@@ -23,7 +26,9 @@ struct _PrimaryColumn {
     const gchar *name;
 
     EPrimaryColumnIntValueFunc convert_func;
-    gpointer convert_func_data;
+    EPrimaryColumnDataValueFunc revert_func;
+    gpointer convert_func_data,
+             revert_func_data;
 };
 
 /**
@@ -46,7 +51,9 @@ e_primary_column_new_s64(const gchar *name);
 E_EXPORT EPrimaryColumn *
 e_primary_column_new(const gchar *name,
                      EPrimaryColumnIntValueFunc convert_func,
-                     gpointer convert_func_data);
+                     gpointer convert_func_data,
+                     EPrimaryColumnDataValueFunc revert_func,
+                     gpointer revert_func_data);
 
 E_EXPORT void
 e_primary_column_free(EPrimaryColumn *primary_column);

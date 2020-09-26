@@ -113,7 +113,7 @@ _print_primary_key_value(gpointer primary_key_value,
 
     g_print("Primary key value pointing to %p, actual value %lu\n",
             primary_key_value,
-            column->convert_func(primary_key_value, column->convert_func_data));
+            *(guint64 *) column->revert_func((guint64) primary_key_value, column->revert_func_data));
 }
 
 static void
