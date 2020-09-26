@@ -1,7 +1,17 @@
 Introduction
 ===============
 
-Enlightenment is an extensible database management software.
+Enlightenment is an extensible database management software (DBMS).
+
+It stores data in Tables where the Columns represent the data fields and the Rows represent data entries.
+
+You can use Enlightenment as:
+- a library which handles data storage for your application
+- a database server which is accessible from CLI
+- a database server which is remotely accessible (via WebSocket, MySQL client, etc.)
+
+Project Structure
+===============
 
 It is divided into the following modules:
 
@@ -12,6 +22,15 @@ It is divided into the following modules:
 | enl-api | Library to use when developing custom Engines or Drivers. |
 
 More info about these modules can be found in [Project Structure](doc/images/enl-global-structure-dark.png) [(L)](doc/images/enl-global-structure-light.png) and [CMake Structure](doc/images/cmake-structure-dark.png) [(L)](doc/images/cmake-structure-light.png)
+
+Engine Comparison
+===============
+
+The following table lists all available engines with their worst possible CRUD-L complexities:
+
+| Name | Short Description      | Create | Read | Update | Delete | List |
+| ---- | ---------------------- | ------ | ---- | ------ | ------ | ---- |
+| IMH  | In-Memory (RAM) engine | O(1)   | O(1) | ~      | ~      | O(n) |
 
 License
 ===============
@@ -41,7 +60,7 @@ Roadmap
     - [ ] General purpose disk storage engine
     - [ ] Hybrid engine
 4. [ ] Drivers
-    - [ ] ENL minimalistic driver
+    - [ ] ENL minimalistic driver (via plain socket and/or WebSocket)
     - [ ] MySQL/MariaDB compatible
     - [ ] Mongo compatible driver (although ours is relational, it'll work probably)
 5. [ ] Library usage examples

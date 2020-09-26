@@ -5,9 +5,11 @@
 
 G_BEGIN_DECLS
 
-#define E_IMH_DATA(ptr) ((EImhData *) ptr)
+#define E_IMH_DATA(ptr)                 ((EImhData *) ptr)
+#define E_IMH_ROWS_LIST_ELEMENT(ptr)    ((EImhRowsListElement *) ptr)
 
-typedef struct _Data EImhData;
+typedef struct _Data                    EImhData;
+typedef struct _RowsListElement         EImhRowsListElement;
 
 /**
  * Internal data structure.
@@ -40,6 +42,15 @@ struct _Data {
      * Internal row data length in bits/
      */
     guint64 row_size;
+};
+
+/**
+ * Binds the PK to a rows list element
+ */
+struct _RowsListElement {
+    gchararray raw_data;
+
+    guint64 primary_key_value;
 };
 
 G_END_DECLS

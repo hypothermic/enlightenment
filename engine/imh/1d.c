@@ -82,6 +82,7 @@ _e_imh_1d_row_create(const ETable *table,
                      gpointer imh_data,
                      GError **error) {
     EImhData *data = E_IMH_DATA(imh_data);
+    EImhRowsListElement *list_element = g_new0(EImhRowsListElement, 1);
     // packed is ONLY data values because PK values are in index already!!! so row_size should be data_size !!!! TODO that.
     gchararray packed = e_imh_row_pack(row, BITS_TO_BYTES(data->row_size), table, error);
     guint64 requested_index = _e_imh_1d_row_get_index(table, row);
@@ -90,14 +91,17 @@ _e_imh_1d_row_create(const ETable *table,
         return FALSE;
     }
 
+    list_element->primary_key_value = requested_index;
+    list_element->raw_data = packed;
+
     if (requested_index == 0) { // append row
         g_array_append_vals(data->rows, packed, 1);
-        data->rows_list = g_slist_append(data->rows_list, packed);
+        data->rows_list = g_slist_append(data->rows_list, list_element);
     } else { // insert row
         g_array_insert_vals(data->rows, requested_index, packed, 1);
 
         // TODO first delete the element with requested_index from the slist!!!!
-        data->rows_list = g_slist_append(data->rows_list, packed);
+        data->rows_list = g_slist_append(data->rows_list, list_element);
     }
 
     data->row_amount++;
@@ -156,14 +160,16 @@ _e_imh_1d_row_list(const ETable *table,
 static void
 _e_imh_1d_row_list_foreach(gpointer element,
                            gpointer user_data) {
+    EImhRowsListElement *list_element = E_IMH_ROWS_LIST_ELEMENT(element);
     struct _RowListForeachData *data = _ROW_LIST_FOREACH_DATA(user_data);
     GError *error = NULL;
     ERow **rows = data->rows;
-    ERow *unpacked = e_imh_row_unpack(((gchararray) element), data->table, &error);
+    ERow *unpacked = e_imh_row_unpack(list_element->raw_data, data->table, &error);
 
     // TODO fill primary keys
     // TODO maybe use a GSList that has another storage spot (like a HashMap) so you can always have the PK value at hand??????
     unpacked->primary_key_values = g_ptr_array_new();
+    g_ptr_array_add(unpacked->primary_key_values, &(list_element->primary_key_value));
 
     rows[data->iteration] = unpacked;
 

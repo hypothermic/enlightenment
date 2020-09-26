@@ -9,7 +9,7 @@ G_BEGIN_DECLS
 
 #define E_PRIMARY_COLUMN(ptr) ((EPrimaryColumn *) ptr)
 
-typedef gint64
+typedef guint64
 (* EPrimaryColumnIntValueFunc) (gpointer key_data, gpointer convert_func_data);
 
 typedef struct _PrimaryColumn EPrimaryColumn;
